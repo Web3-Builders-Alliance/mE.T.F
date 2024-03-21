@@ -8,7 +8,17 @@
       "args": []
     }
   ],
-  "metadata": {
-    "address": "7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq"
-  }
+  "types": [
+    {
+      "name": "MyError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SomethingWentWrong"
+          }
+        ]
+      }
+    }
+  ]
 }

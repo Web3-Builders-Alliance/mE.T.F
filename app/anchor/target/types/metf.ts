@@ -7,6 +7,19 @@ export type Metf = {
       "accounts": [],
       "args": []
     }
+  ],
+  "types": [
+    {
+      "name": "MyError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SomethingWentWrong"
+          }
+        ]
+      }
+    }
   ]
 };
 
@@ -18,6 +31,19 @@ export const IDL: Metf = {
       "name": "greet",
       "accounts": [],
       "args": []
+    }
+  ],
+  "types": [
+    {
+      "name": "MyError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SomethingWentWrong"
+          }
+        ]
+      }
     }
   ]
 };
