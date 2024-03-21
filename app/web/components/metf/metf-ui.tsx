@@ -1,10 +1,10 @@
 'use client';
 
 import { Keypair } from '@solana/web3.js';
-import { useMeTFProgram } from './me-t-f-data-access';
+import { useMetfProgram } from './metf-data-access';
 
-export function MeTFCreate() {
-  const { greet } = useMeTFProgram();
+export function MetfCreate() {
+  const { greet } = useMetfProgram();
 
   return (
     <button
@@ -17,8 +17,8 @@ export function MeTFCreate() {
   );
 }
 
-export function MeTFProgram() {
-  const { getProgramAccount } = useMeTFProgram();
+export function MetfProgram() {
+  const { getProgramAccount } = useMetfProgram();
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;

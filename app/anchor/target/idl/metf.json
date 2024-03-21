@@ -1,11 +1,14 @@
 {
   "version": "0.1.0",
-  "name": "me_t_f",
+  "name": "metf",
   "instructions": [
     {
       "name": "greet",
       "accounts": [],
       "args": []
     }
-  ]
+  ],
+  "metadata": {
+    "address": "7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq"
+  }
 }

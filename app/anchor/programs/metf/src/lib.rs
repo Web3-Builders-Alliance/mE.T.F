@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 
-declare_id!("87EjUQYBASSBK69wYeo5mDCEtEMMFK6HxHedFuhQZHCj");
+declare_id!("7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq");
 
 #[program]
-pub mod me_t_f {
+pub mod metf {
     use super::*;
 
     pub fn greet(_ctx: Context<Initialize>) -> Result<()> {
