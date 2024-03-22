@@ -4,17 +4,17 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
-import { useMeTFProgram } from './me-t-f-data-access';
-import { MeTFCreate, MeTFProgram } from './me-t-f-ui';
+import { useMetfProgram } from './metf-data-access';
+import { MetfCreate, MetfProgram } from './metf-ui';
 
-export default function MeTFFeature() {
+export default function MetfFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useMeTFProgram();
+  const { programId } = useMetfProgram();
 
   return publicKey ? (
     <div>
       <AppHero
-        title="MeTF"
+        title="Metf"
         subtitle={'Run the program by clicking the "Run program" button.'}
       >
         <p className="mb-6">
@@ -23,9 +23,9 @@ export default function MeTFFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <MeTFCreate />
+        <MetfCreate />
       </AppHero>
-      <MeTFProgram />
+      <MetfProgram />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

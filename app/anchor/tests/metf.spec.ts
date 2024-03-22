@@ -1,12 +1,12 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
-import { MeTF } from '../target/types/me_t_f';
+import { Metf } from '../target/types/metf';
 
-describe('me-t-f', () => {
+describe('metf', () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.MeTF as Program<MeTF>;
+  const program = anchor.workspace.Metf as Program<Metf>;
 
   it('should run the program', async () => {
     // Add your test here.

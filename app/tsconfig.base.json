@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./web/*"],
-      "@me-t-f/anchor": ["anchor/src/index.ts"]
+      "@metf/anchor": ["anchor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
