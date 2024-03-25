@@ -10,7 +10,7 @@ declare_id!("7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq");
 #[program]
 pub mod metf {
     use super::*;
-    pub fn greet(ctx: Context<Initialize>) -> Result<()> {
-        ctx.accounts.handler()
+    pub fn init(ctx: Context<Initialize>) -> Result<()> {
+        ctx.accounts.init(&ctx.bumps)
     }
 }
