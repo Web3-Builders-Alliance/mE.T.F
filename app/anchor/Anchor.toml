@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-metf = "7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq"
+metf = "pxeoymh9o6hSEhCeEAGDPfcZiD2rkdMSW1YRb9WEfZT"
 
 [registry]
 url = "https://api.apr.dev"
@@ -15,7 +15,7 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "../node_modules/.bin/nx run anchor:jest"
+test = "../node_modules/.bin/nx run anchor:jest --skip-nx-cache"
 
 [test]
 startup_wait = 5000
@@ -26,3 +26,12 @@ upgradeable = false
 bind_address = "127.0.0.1"
 ledger = ".anchor/test-ledger"
 rpc_port = 8899
+
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "tests/metaplex_token_metadata_program.so"
+
+[[test.genesis]]
+address = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+program = "tests/token_2022_program.so"
