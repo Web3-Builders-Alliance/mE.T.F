@@ -14,7 +14,7 @@ pub struct Initialize<'info> {
       bump
     )]
     pub config: Account<'info, Config>,
-    pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 impl<'info> Initialize<'info> {

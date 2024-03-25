@@ -4,10 +4,23 @@ export type Metf = {
   "constants": [
     {
       "name": "CONFIG_SEED",
-      "type": {
-        "defined": "&'static[u8]"
-      },
-      "value": "b\"config\""
+      "type": "bytes",
+      "value": "[99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "PERSON_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110]"
+    },
+    {
+      "name": "PERSON_TOKEN_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+    },
+    {
+      "name": "TOKEN_LIMIT_AMOUNT",
+      "type": "u64",
+      "value": "1_000_000_000"
     }
   ],
   "instructions": [
@@ -31,6 +44,69 @@ export type Metf = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "initPersonToken",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "person",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "InitPersonTokenParams"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -49,19 +125,63 @@ export type Metf = {
           }
         ]
       }
+    },
+    {
+      "name": "person",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
     }
   ],
   "types": [
     {
-      "name": "MyError",
+      "name": "InitPersonTokenParams",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "SomethingWentWrong"
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "SomethingWentWrong",
+      "msg": "Something went wrong!"
     }
   ]
 };
@@ -72,10 +192,23 @@ export const IDL: Metf = {
   "constants": [
     {
       "name": "CONFIG_SEED",
-      "type": {
-        "defined": "&'static[u8]"
-      },
-      "value": "b\"config\""
+      "type": "bytes",
+      "value": "[99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "PERSON_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110]"
+    },
+    {
+      "name": "PERSON_TOKEN_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+    },
+    {
+      "name": "TOKEN_LIMIT_AMOUNT",
+      "type": "u64",
+      "value": "1_000_000_000"
     }
   ],
   "instructions": [
@@ -99,6 +232,69 @@ export const IDL: Metf = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "initPersonToken",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "person",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "InitPersonTokenParams"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -117,19 +313,63 @@ export const IDL: Metf = {
           }
         ]
       }
+    },
+    {
+      "name": "person",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
     }
   ],
   "types": [
     {
-      "name": "MyError",
+      "name": "InitPersonTokenParams",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "SomethingWentWrong"
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "SomethingWentWrong",
+      "msg": "Something went wrong!"
     }
   ]
 };
