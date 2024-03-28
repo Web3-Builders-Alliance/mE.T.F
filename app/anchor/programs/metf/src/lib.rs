@@ -24,4 +24,8 @@ pub mod metf {
         ctx.accounts.initialize(&ctx.bumps)?;
         ctx.accounts.init_token_mint(params.clone(), &ctx.bumps)
     }
+
+    pub fn buy_token(ctx: Context<BuyToken>, amount: u64) -> Result<()> {
+        ctx.accounts.buy_token(amount)
+    }
 }
