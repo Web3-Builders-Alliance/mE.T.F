@@ -28,7 +28,7 @@ describe('metf', () => {
 
   const log = async (signature: string): Promise<string> => {
     console.log(
-      `Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=custom&customUrl=${connection.rpcEndpoint}`
+      `Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=custom`
     );
     return signature;
   };
@@ -39,7 +39,6 @@ describe('metf', () => {
   ];
   const CONFIG_SEED = 'config';
   const PERSON_SEED = 'person';
-  const PERSON_TOKEN_SEED = 'person_token';
 
   let configPda: anchor.web3.PublicKey;
   beforeAll(async () => {
@@ -72,27 +71,33 @@ describe('metf', () => {
     log(tx);
   });
 
+  const [personPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(PERSON_SEED), user.publicKey.toBuffer()],
+    program.programId
+  );
+  const metadata = {
+    name: 'LEO TOKEN',
+    symbol: 'LEOT',
+    decimals: 9,
+    uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
+  };
+  const mint = anchor.web3.Keypair.generate();
+
+  const vault = getAssociatedTokenAddressSync(
+    mint.publicKey,
+    personPda,
+    true,
+    TOKEN_2022_PROGRAM_ID
+  );
+
+  const user_ata = getAssociatedTokenAddressSync(
+    mint.publicKey,
+    user.publicKey,
+    false,
+    TOKEN_2022_PROGRAM_ID
+  );
+
   it('Should create a user token mint', async () => {
-    console.log('Creating a user token mint');
-    const [personPda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from(PERSON_SEED), user.publicKey.toBuffer()],
-      program.programId
-    );
-    const metadata = {
-      name: 'LEO TOKEN',
-      symbol: 'LEOT',
-      decimals: 9,
-      uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
-    };
-    const mint = anchor.web3.Keypair.generate();
-
-    const vault = await getAssociatedTokenAddressSync(
-      mint.publicKey,
-      personPda,
-      true,
-      TOKEN_2022_PROGRAM_ID
-    );
-
     const tx = await program.methods
       .initPersonToken({
         ...metadata,
@@ -108,6 +113,24 @@ describe('metf', () => {
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       })
       .signers([mint, user])
+      .rpc();
+    log(tx);
+  });
+
+  it('Should buy a token', async () => {
+    const tx = await program.methods
+      .buyToken(new anchor.BN(100 * 10 ** 6))
+      .accounts({
+        signer: user.publicKey,
+        person: personPda,
+        mint: mint.publicKey,
+        vault,
+        userAta: user_ata,
+        token2022Program: TOKEN_2022_PROGRAM_ID,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      })
+      .signers([user])
       .rpc();
     log(tx);
   });

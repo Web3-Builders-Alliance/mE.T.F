@@ -14,7 +14,8 @@ use anchor_spl::{
             self,
             extension::{
                 metadata_pointer::instruction::initialize as initialize_metadata_pointer,
-                transfer_hook::instruction::initialize as intialize_transfer_hook, ExtensionType,
+                transfer_fee, transfer_hook::instruction::initialize as intialize_transfer_hook,
+                ExtensionType,
             },
             instruction::AuthorityType,
             state::Mint,
@@ -70,6 +71,7 @@ impl<'info> InitPersonToken<'info> {
         let size = ExtensionType::try_calculate_account_len::<Mint>(&[
             ExtensionType::MetadataPointer,
             ExtensionType::TransferHook,
+            ExtensionType::TransferFeeConfig,
         ])
         .unwrap();
 
@@ -82,10 +84,7 @@ impl<'info> InitPersonToken<'info> {
             name: params.name,
             symbol: params.symbol,
             uri: params.uri,
-            additional_metadata: vec![
-                ("issuer".to_string(), "metf".to_string()),
-                ("version".to_string(), "1".to_string()),
-            ],
+            additional_metadata: vec![],
         };
 
         let extension_extra_space = metadata.tlv_size_of().unwrap();
@@ -126,6 +125,18 @@ impl<'info> InitPersonToken<'info> {
             &vec![self.mint.to_account_info()],
         )?;
 
+        invoke(
+            &transfer_fee::instruction::initialize_transfer_fee_config(
+                &self.token_2022_program.to_account_info().key(),
+                &self.mint.to_account_info().key(),
+                Some(&self.person.to_account_info().key()),
+                Some(&self.person.to_account_info().key()),
+                50u16,
+                5000u64,
+            )?,
+            &vec![self.mint.to_account_info()],
+        )?;
+
         // initialize mint
         initialize_mint2(
             CpiContext::new(
@@ -142,7 +153,7 @@ impl<'info> InitPersonToken<'info> {
         // init metadata account
         let seeds = &[
             PERSON_SEED.as_ref(),
-            self.mint.to_account_info().key.as_ref(),
+            self.signer.to_account_info().key.as_ref(),
             &[bumps.person],
         ];
         let signer_seeds = &[&seeds[..]];
@@ -166,6 +177,13 @@ impl<'info> InitPersonToken<'info> {
             signer_seeds,
         )?;
 
+        self.mint_to_vault()?;
+
+        self.remove_mint_authority()?;
+        Ok(())
+    }
+
+    fn mint_to_vault(&mut self) -> Result<()> {
         // create associated token account
         create(CpiContext::new(
             self.associated_token_program.to_account_info(),
@@ -192,6 +210,10 @@ impl<'info> InitPersonToken<'info> {
             TOKEN_LIMIT_AMOUNT.mul(10u64.pow(9)),
         )?;
 
+        Ok(())
+    }
+
+    fn remove_mint_authority(&mut self) -> Result<()> {
         set_authority(
             CpiContext::new(
                 self.token_2022_program.to_account_info(),
@@ -202,9 +224,7 @@ impl<'info> InitPersonToken<'info> {
             ),
             AuthorityType::MintTokens,
             None, // Set mint authority to be None
-        )?;
-
-        Ok(())
+        )
     }
 
     pub fn initialize(&mut self, bumps: &InitPersonTokenBumps) -> Result<()> {
