@@ -7,7 +7,7 @@ pub use instructions::*;
 
 pub use state::InitPersonTokenParams;
 
-declare_id!("pxeoymh9o6hSEhCeEAGDPfcZiD2rkdMSW1YRb9WEfZT");
+declare_id!("4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG");
 
 #[program]
 pub mod metf {
@@ -22,7 +22,6 @@ pub mod metf {
         params: InitPersonTokenParams,
     ) -> Result<()> {
         ctx.accounts.initialize(&ctx.bumps)?;
-        ctx.accounts.init_token_mint(params.clone(), &ctx.bumps)?;
-        ctx.accounts.mint_token_to_vault()
+        ctx.accounts.init_token_mint(params.clone(), &ctx.bumps)
     }
 }
