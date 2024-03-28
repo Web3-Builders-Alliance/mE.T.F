@@ -13,6 +13,6 @@ pub const CONFIG_SEED: &'static [u8] = b"config";
 #[constant]
 pub const PERSON_SEED: &'static [u8] = b"person";
 #[constant]
-pub const PERSON_TOKEN_SEED: &'static [u8] = b"person_token";
+pub const PERSON_TOKEN_VAULT_SEED: &'static [u8] = b"vault";
 #[constant]
 pub const TOKEN_LIMIT_AMOUNT: u64 = 1_000_000_000;

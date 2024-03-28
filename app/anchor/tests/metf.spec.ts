@@ -84,13 +84,10 @@ describe('metf', () => {
       decimals: 9,
       uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
     };
-    const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from(PERSON_TOKEN_SEED)],
-      program.programId
-    );
+    const mint = anchor.web3.Keypair.generate();
 
-    const vault = getAssociatedTokenAddressSync(
-      mint,
+    const vault = await getAssociatedTokenAddressSync(
+      mint.publicKey,
       personPda,
       true,
       TOKEN_2022_PROGRAM_ID
@@ -103,14 +100,14 @@ describe('metf', () => {
       .accounts({
         signer: user.publicKey,
         person: personPda,
-        mint: mint,
+        mint: mint.publicKey,
         vault,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       })
-      .signers([user])
+      .signers([mint, user])
       .rpc();
     log(tx);
   });

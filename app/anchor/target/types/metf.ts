@@ -13,9 +13,9 @@ export type Metf = {
       "value": "[112, 101, 114, 115, 111, 110]"
     },
     {
-      "name": "PERSON_TOKEN_SEED",
+      "name": "PERSON_TOKEN_VAULT_SEED",
       "type": "bytes",
-      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+      "value": "[118, 97, 117, 108, 116]"
     },
     {
       "name": "TOKEN_LIMIT_AMOUNT",
@@ -54,25 +54,19 @@ export type Metf = {
           "isSigner": true
         },
         {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
           "name": "person",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "CHECK it's ok"
-          ]
-        },
-        {
           "name": "vault",
           "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "CHECK it'ok"
-          ]
+          "isSigner": false
         },
         {
           "name": "token2022Program",
@@ -197,9 +191,9 @@ export const IDL: Metf = {
       "value": "[112, 101, 114, 115, 111, 110]"
     },
     {
-      "name": "PERSON_TOKEN_SEED",
+      "name": "PERSON_TOKEN_VAULT_SEED",
       "type": "bytes",
-      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+      "value": "[118, 97, 117, 108, 116]"
     },
     {
       "name": "TOKEN_LIMIT_AMOUNT",
@@ -238,25 +232,19 @@ export const IDL: Metf = {
           "isSigner": true
         },
         {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
           "name": "person",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "CHECK it's ok"
-          ]
-        },
-        {
           "name": "vault",
           "isMut": true,
-          "isSigner": false,
-          "docs": [
-            "CHECK it'ok"
-          ]
+          "isSigner": false
         },
         {
           "name": "token2022Program",
