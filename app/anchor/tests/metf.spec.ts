@@ -3,15 +3,11 @@ import { Program } from '@coral-xyz/anchor';
 import { Metf } from '../target/types/metf';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
 
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-const METADATA_SEED = 'metadata';
-const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
-  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-);
 describe('metf', () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
@@ -89,20 +85,16 @@ describe('metf', () => {
       uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
     };
     const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from(PERSON_TOKEN_SEED), user.publicKey.toBuffer()],
+      [Buffer.from(PERSON_TOKEN_SEED)],
       program.programId
     );
 
-    const [metadataPda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from(METADATA_SEED),
-        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-        mint.toBuffer(),
-      ],
-      TOKEN_METADATA_PROGRAM_ID
+    const vault = getAssociatedTokenAddressSync(
+      mint,
+      personPda,
+      true,
+      TOKEN_2022_PROGRAM_ID
     );
-
-    const vault = getAssociatedTokenAddressSync(mint, personPda, true);
 
     const tx = await program.methods
       .initPersonToken({
@@ -111,11 +103,9 @@ describe('metf', () => {
       .accounts({
         signer: user.publicKey,
         person: personPda,
-        metadata: metadataPda,
         mint: mint,
         vault,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+        token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,

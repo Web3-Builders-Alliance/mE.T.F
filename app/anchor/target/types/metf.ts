@@ -61,25 +61,21 @@ export type Metf = {
         {
           "name": "mint",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "CHECK it's ok"
+          ]
         },
         {
           "name": "vault",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "CHECK it'ok"
+          ]
         },
         {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -249,25 +245,21 @@ export const IDL: Metf = {
         {
           "name": "mint",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "CHECK it's ok"
+          ]
         },
         {
           "name": "vault",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "CHECK it'ok"
+          ]
         },
         {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
