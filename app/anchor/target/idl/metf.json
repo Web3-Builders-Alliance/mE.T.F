@@ -13,9 +13,9 @@
       "value": "[112, 101, 114, 115, 111, 110]"
     },
     {
-      "name": "PERSON_TOKEN_SEED",
+      "name": "PERSON_TOKEN_VAULT_SEED",
       "type": "bytes",
-      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+      "value": "[118, 97, 117, 108, 116]"
     },
     {
       "name": "TOKEN_LIMIT_AMOUNT",
@@ -54,12 +54,12 @@
           "isSigner": true
         },
         {
-          "name": "person",
+          "name": "mint",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
-          "name": "mint",
+          "name": "person",
           "isMut": true,
           "isSigner": false
         },
@@ -69,17 +69,7 @@
           "isSigner": false
         },
         {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -185,6 +175,6 @@
     }
   ],
   "metadata": {
-    "address": "pxeoymh9o6hSEhCeEAGDPfcZiD2rkdMSW1YRb9WEfZT"
+    "address": "4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG"
   }
 }

@@ -13,9 +13,9 @@ export type Metf = {
       "value": "[112, 101, 114, 115, 111, 110]"
     },
     {
-      "name": "PERSON_TOKEN_SEED",
+      "name": "PERSON_TOKEN_VAULT_SEED",
       "type": "bytes",
-      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+      "value": "[118, 97, 117, 108, 116]"
     },
     {
       "name": "TOKEN_LIMIT_AMOUNT",
@@ -54,12 +54,12 @@ export type Metf = {
           "isSigner": true
         },
         {
-          "name": "person",
+          "name": "mint",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
-          "name": "mint",
+          "name": "person",
           "isMut": true,
           "isSigner": false
         },
@@ -69,17 +69,7 @@ export type Metf = {
           "isSigner": false
         },
         {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -201,9 +191,9 @@ export const IDL: Metf = {
       "value": "[112, 101, 114, 115, 111, 110]"
     },
     {
-      "name": "PERSON_TOKEN_SEED",
+      "name": "PERSON_TOKEN_VAULT_SEED",
       "type": "bytes",
-      "value": "[112, 101, 114, 115, 111, 110, 95, 116, 111, 107, 101, 110]"
+      "value": "[118, 97, 117, 108, 116]"
     },
     {
       "name": "TOKEN_LIMIT_AMOUNT",
@@ -242,12 +232,12 @@ export const IDL: Metf = {
           "isSigner": true
         },
         {
-          "name": "person",
+          "name": "mint",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
-          "name": "mint",
+          "name": "person",
           "isMut": true,
           "isSigner": false
         },
@@ -257,17 +247,7 @@ export const IDL: Metf = {
           "isSigner": false
         },
         {
-          "name": "metadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMetadataProgram",
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
