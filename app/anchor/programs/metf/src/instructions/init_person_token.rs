@@ -2,6 +2,7 @@ use std::ops::Mul;
 
 use crate::{
     constants::{PERSON_SEED, TOKEN_LIMIT_AMOUNT},
+    init_ex_account,
     state::{InitPersonTokenParams, Person},
 };
 use anchor_lang::{prelude::*, system_program::create_account};
@@ -54,6 +55,13 @@ pub struct InitPersonToken<'info> {
     )]
     /// CHECK: it is fine to use vault as the associated token account.
     pub vault: UncheckedAccount<'info>,
+    /// CHECK: ExtraAccountMetaList Account, must use these seeds
+    #[account(
+      mut,
+      seeds = [b"extra-account-metas", mint.key().as_ref()],
+      bump
+  )]
+    pub extra_account_meta_list: AccountInfo<'info>,
     pub token_2022_program: Program<'info, Token2022>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -67,6 +75,7 @@ impl<'info> InitPersonToken<'info> {
         &mut self,
         params: InitPersonTokenParams,
         bumps: &InitPersonTokenBumps,
+        program_id: &Pubkey,
     ) -> Result<()> {
         let size = ExtensionType::try_calculate_account_len::<Mint>(&[
             ExtensionType::MetadataPointer,
@@ -105,12 +114,21 @@ impl<'info> InitPersonToken<'info> {
         )?;
 
         // add stransfer hook and metadata pointer
+        init_ex_account(
+            &program_id,
+            &self.signer,
+            &self.mint.to_account_info(),
+            &self.extra_account_meta_list.to_account_info(),
+            &bumps.extra_account_meta_list,
+            &self.system_program,
+        )?;
+
         invoke(
             &intialize_transfer_hook(
                 &self.token_2022_program.key(),
                 &self.mint.key(),
                 Some(self.person.key()),
-                None, // Some(*ctx.program_id),
+                None, //Some(*program_id),
             )?,
             &vec![self.mint.to_account_info()],
         )?;

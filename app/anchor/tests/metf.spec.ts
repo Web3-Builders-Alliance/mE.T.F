@@ -91,7 +91,7 @@ describe('metf', () => {
   const [extraAccountMetaListPDA] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('extra-account-metas'), mint.publicKey.toBuffer()],
-      transferHookProgram.programId
+      program.programId
     );
 
   const vault = getAssociatedTokenAddressSync(
@@ -118,6 +118,7 @@ describe('metf', () => {
         person: personPda,
         mint: mint.publicKey,
         vault,
+        extraAccountMetaList: extraAccountMetaListPDA,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -127,19 +128,19 @@ describe('metf', () => {
       .rpc();
     log(tx);
 
-    const initTransferHook = await transferHookProgram.methods
-      .initializeExtraAccountMetaList()
-      .accounts({
-        payer: admin.publicKey,
-        extraAccountMetaList: extraAccountMetaListPDA,
-        mint: mint.publicKey,
-        tokenProgram: TOKEN_2022_PROGRAM_ID,
-        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .signers([admin])
-      .rpc();
-    log(initTransferHook);
+    // const initTransferHook = await transferHookProgram.methods
+    //   .initializeExtraAccountMetaList()
+    //   .accounts({
+    //     payer: admin.publicKey,
+    //     extraAccountMetaList: extraAccountMetaListPDA,
+    //     mint: mint.publicKey,
+    //     tokenProgram: TOKEN_2022_PROGRAM_ID,
+    //     associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+    //     systemProgram: anchor.web3.SystemProgram.programId,
+    //   })
+    //   .signers([admin])
+    //   .rpc();
+    // log(initTransferHook);
   });
 
   it('Should buy a token', async () => {

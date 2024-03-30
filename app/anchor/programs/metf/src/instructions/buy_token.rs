@@ -3,9 +3,12 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::sysvar::rent::ID as RENT_ID;
 use anchor_spl::{
     associated_token::{create, AssociatedToken, Create},
-    token_2022::{transfer_checked, Token2022, TransferChecked},
-    token_interface::Mint,
+    token_2022::{
+        spl_token_2022::extension::transfer_fee::instruction::transfer_checked_with_fee, Token2022,
+    },
+    token_interface::{transfer_checked, Mint, TransferChecked},
 };
+use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
 pub struct BuyToken<'info> {
@@ -71,6 +74,30 @@ impl<'info> BuyToken<'info> {
             &[self.person.bump],
         ];
         let signer_seeds = &[&seeds[..]];
+
+        // invoke_signed(
+        //     &transfer_checked_with_fee(
+        //         &self.token_2022_program.to_account_info().key(),
+        //         &self.vault.to_account_info().key(),
+        //         &self.mint.to_account_info().key(),
+        //         &self.user_ata.to_account_info().key(),
+        //         &self.person.to_account_info().key(),
+        //         &[&self.person.to_account_info().key()],
+        //         amount,
+        //         self.mint.decimals,
+        //         5000,
+        //     )?,
+        //     &[
+        //         self.token_2022_program.to_account_info(),
+        //         self.vault.to_account_info(),
+        //         self.mint.to_account_info(),
+        //         self.user_ata.to_account_info(),
+        //         self.person.to_account_info(),
+        //         self.signer.to_account_info(),
+        //         self.system_program.to_account_info(),
+        //     ],
+        //     signer_seeds,
+        // )?;
 
         transfer_checked(
             CpiContext::new_with_signer(
