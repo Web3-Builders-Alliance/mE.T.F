@@ -33,6 +33,11 @@ export type Metf = {
           "isSigner": true
         },
         {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "config",
           "isMut": true,
           "isSigner": false
@@ -169,6 +174,10 @@ export type Metf = {
             "type": "publicKey"
           },
           {
+            "name": "transferHook",
+            "type": "publicKey"
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -180,6 +189,10 @@ export type Metf = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          },
           {
             "name": "user",
             "type": "publicKey"
@@ -231,6 +244,11 @@ export type Metf = {
       "code": 6000,
       "name": "SomethingWentWrong",
       "msg": "Something went wrong!"
+    },
+    {
+      "code": 6001,
+      "name": "AccountAlreadyInitialized",
+      "msg": "Person account is already initialized"
     }
   ]
 };
@@ -270,6 +288,11 @@ export const IDL: Metf = {
           "isSigner": true
         },
         {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "config",
           "isMut": true,
           "isSigner": false
@@ -406,6 +429,10 @@ export const IDL: Metf = {
             "type": "publicKey"
           },
           {
+            "name": "transferHook",
+            "type": "publicKey"
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -417,6 +444,10 @@ export const IDL: Metf = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          },
           {
             "name": "user",
             "type": "publicKey"
@@ -468,6 +499,11 @@ export const IDL: Metf = {
       "code": 6000,
       "name": "SomethingWentWrong",
       "msg": "Something went wrong!"
+    },
+    {
+      "code": 6001,
+      "name": "AccountAlreadyInitialized",
+      "msg": "Person account is already initialized"
     }
   ]
 };

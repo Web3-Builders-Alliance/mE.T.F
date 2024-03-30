@@ -33,6 +33,11 @@
           "isSigner": true
         },
         {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "config",
           "isMut": true,
           "isSigner": false
@@ -169,6 +174,10 @@
             "type": "publicKey"
           },
           {
+            "name": "transferHook",
+            "type": "publicKey"
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -180,6 +189,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          },
           {
             "name": "user",
             "type": "publicKey"
@@ -231,9 +244,14 @@
       "code": 6000,
       "name": "SomethingWentWrong",
       "msg": "Something went wrong!"
+    },
+    {
+      "code": 6001,
+      "name": "AccountAlreadyInitialized",
+      "msg": "Person account is already initialized"
     }
   ],
   "metadata": {
-    "address": "4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG"
+    "address": "4sRHEgBbnAg7snoVaDimSTV3JV6QXUm8JgbAfDXTZqnU"
   }
 }

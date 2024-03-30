@@ -5,14 +5,15 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-metf = "4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG"
+metf = "4sRHEgBbnAg7snoVaDimSTV3JV6QXUm8JgbAfDXTZqnU"
+transfer-hook = "6Sz4DCnX1jh6xF6krFSf1mPMtt4kgyu763HCWQALMinn"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-wallet = "~/.config/solana/id.json"
+wallet = "/home/leo/.config/solana/id.json"
 
 [scripts]
 test = "../node_modules/.bin/nx run anchor:jest --skip-nx-cache"
@@ -22,12 +23,6 @@ startup_wait = 5000
 shutdown_wait = 2000
 upgradeable = false
 
-[test.validator]
-bind_address = "127.0.0.1"
-ledger = ".anchor/test-ledger"
-rpc_port = 8899
-
-
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 program = "tests/metaplex_token_metadata_program.so"
@@ -35,3 +30,8 @@ program = "tests/metaplex_token_metadata_program.so"
 [[test.genesis]]
 address = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 program = "tests/token_2022_program.so"
+
+[test.validator]
+bind_address = "127.0.0.1"
+ledger = ".anchor/test-ledger"
+rpc_port = 8899

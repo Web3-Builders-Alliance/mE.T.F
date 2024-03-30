@@ -231,9 +231,9 @@ impl<'info> InitPersonToken<'info> {
         self.person.init(
             *self.signer.to_account_info().key,
             *self.mint.to_account_info().key,
-            *self.mint.to_account_info().key,
+            *self.vault.to_account_info().key,
             bumps.person,
-        );
+        )?;
         Ok(())
     }
 }

@@ -8,11 +8,14 @@ import {
 } from '@solana/spl-token';
 
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { TransferHook } from '../target/types/transfer_hook';
 describe('metf', () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.Metf as Program<Metf>;
+  const transferHookProgram = anchor.workspace
+    .TransferHook as Program<TransferHook>;
 
   console.log('Program ID', program.programId.toBase58());
   const connection = anchor.getProvider().connection;
@@ -41,6 +44,7 @@ describe('metf', () => {
   const PERSON_SEED = 'person';
 
   let configPda: anchor.web3.PublicKey;
+
   beforeAll(async () => {
     [configPda] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from(CONFIG_SEED)],
@@ -63,6 +67,7 @@ describe('metf', () => {
       .init()
       .accounts({
         signer: admin.publicKey,
+        transferHook: transferHookProgram.programId,
         config: configPda,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
@@ -82,6 +87,12 @@ describe('metf', () => {
     uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
   };
   const mint = anchor.web3.Keypair.generate();
+
+  const [extraAccountMetaListPDA] =
+    anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('extra-account-metas'), mint.publicKey.toBuffer()],
+      transferHookProgram.programId
+    );
 
   const vault = getAssociatedTokenAddressSync(
     mint.publicKey,
@@ -115,6 +126,20 @@ describe('metf', () => {
       .signers([mint, user])
       .rpc();
     log(tx);
+
+    const initTransferHook = await transferHookProgram.methods
+      .initializeExtraAccountMetaList()
+      .accounts({
+        payer: admin.publicKey,
+        extraAccountMetaList: extraAccountMetaListPDA,
+        mint: mint.publicKey,
+        tokenProgram: TOKEN_2022_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([admin])
+      .rpc();
+    log(initTransferHook);
   });
 
   it('Should buy a token', async () => {
