@@ -5,7 +5,7 @@ use crate::constants::{DISCRIMINATOR_SIZE, PUBKEY_SIZE, U8_SIZE};
 #[account]
 pub struct Config {
     pub admin: Pubkey,
-    transfer_hook: Pubkey,
+    pub transfer_hook: Pubkey,
     pub bump: u8,
 }
 

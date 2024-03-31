@@ -16,15 +16,21 @@ pub struct InitPersonTokenParams {
 #[account]
 pub struct Person {
     pub is_initialized: bool,
-    pub user: Pubkey,       // The user that owns the person account
-    pub token_mint: Pubkey, // The token mint that the person account is associated with
-    pub vault: Pubkey,      // The associated token account that holds the person's tokens
+    pub user: Pubkey,          // The user that owns the person account
+    pub token_mint: Pubkey,    // The token mint that the person account is associated with
+    pub transfer_hook: Pubkey, // The transfer hook that the person account is associated with
+    pub vault: Pubkey,         // The associated token account that holds the person's tokens
     pub bump: u8,
 }
 
 impl Space for Person {
-    const INIT_SPACE: usize =
-        DISCRIMINATOR_SIZE + BOOL_SIZE + PUBKEY_SIZE + PUBKEY_SIZE + PUBKEY_SIZE + U8_SIZE;
+    const INIT_SPACE: usize = DISCRIMINATOR_SIZE
+        + BOOL_SIZE
+        + PUBKEY_SIZE
+        + PUBKEY_SIZE
+        + PUBKEY_SIZE
+        + PUBKEY_SIZE
+        + U8_SIZE;
 }
 
 impl Person {
@@ -32,6 +38,7 @@ impl Person {
         &mut self,
         user: Pubkey,
         token_mint: Pubkey,
+        transfer_hook: Pubkey,
         vault: Pubkey,
         bump: u8,
     ) -> Result<()> {
@@ -39,6 +46,7 @@ impl Person {
         self.is_initialized = true;
         self.user = user;
         self.token_mint = token_mint;
+        self.transfer_hook = transfer_hook;
         self.vault = vault;
         self.bump = bump;
         Ok(())

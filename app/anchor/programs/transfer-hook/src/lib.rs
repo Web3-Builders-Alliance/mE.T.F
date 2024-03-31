@@ -9,16 +9,22 @@ use anchor_spl::{
 use spl_tlv_account_resolution::state::ExtraAccountMetaList;
 use spl_transfer_hook_interface::instruction::{ExecuteInstruction, TransferHookInstruction};
 
-declare_id!("3F3DAm6ub2FCNjaT8VXYLoZ9EHgKUfCRAa9rWYWWizVH");
+declare_id!("2TJHnk4FMjMXDLYwS6MiSXBEEBGJtqXejnPZzoyGpZC6");
 
 #[program]
 pub mod transfer_hook {
+    use spl_tlv_account_resolution::account::ExtraAccountMeta;
+
     use super::*;
 
     pub fn initialize_extra_account_meta_list(
         ctx: Context<InitializeExtraAccountMetaList>,
     ) -> Result<()> {
-        let account_metas = vec![];
+        let account_metas = vec![ExtraAccountMeta::new_with_pubkey(
+            &ctx.accounts.owner_without_fee.key(),
+            false,
+            false,
+        )?];
         // calculate account size
         let account_size = ExtraAccountMetaList::size_of(account_metas.len())? as u64;
         // calculate minimum required lamports
@@ -55,6 +61,23 @@ pub mod transfer_hook {
     }
 
     pub fn transfer_hook(ctx: Context<TransferHook>, amount: u64) -> Result<()> {
+        msg!(
+            "Owner of owner account: {:?}",
+            ctx.accounts.owner.to_account_info().owner.key()
+        );
+        msg!(
+            "Owner of owner_without_fee account: {:?}",
+            ctx.accounts.owner_without_fee.key()
+        );
+        msg!(
+            "Source Token Account onwer: {:?}",
+            ctx.accounts.source_token.to_account_info().owner.key()
+        );
+        msg!(
+            "Destination Token Account onwer: {:?}",
+            ctx.accounts.destination_token.to_account_info().owner.key()
+        );
+
         msg!(
             "Source Token Account: {:?}",
             ctx.accounts.source_token.key()
@@ -113,6 +136,8 @@ pub struct TransferHook<'info> {
         bump
     )]
     pub extra_account_meta_list: UncheckedAccount<'info>,
+    /// CHECK: this is fine
+    pub owner_without_fee: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
@@ -128,6 +153,8 @@ pub struct InitializeExtraAccountMetaList<'info> {
     )]
     pub extra_account_meta_list: AccountInfo<'info>,
     pub mint: InterfaceAccount<'info, Mint>,
+    /// CHECK: this is fine
+    pub owner_without_fee: AccountInfo<'info>,
     pub token_program: Interface<'info, TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,

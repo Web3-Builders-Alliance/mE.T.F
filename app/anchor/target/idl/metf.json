@@ -18,6 +18,11 @@
       "value": "[118, 97, 117, 108, 116]"
     },
     {
+      "name": "EXTRA_ACCOUNT_META_SEED",
+      "type": "bytes",
+      "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -74,8 +79,8 @@
           "isSigner": false
         },
         {
-          "name": "extraAccountMetaList",
-          "isMut": true,
+          "name": "config",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -138,6 +143,21 @@
           "docs": [
             "CHECK"
           ]
+        },
+        {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "extraAccountMetaList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "token2022Program",
@@ -279,6 +299,10 @@
             "type": "publicKey"
           },
           {
+            "name": "transferHook",
+            "type": "publicKey"
+          },
+          {
             "name": "vault",
             "type": "publicKey"
           },
@@ -329,6 +353,6 @@
     }
   ],
   "metadata": {
-    "address": "4sRHEgBbnAg7snoVaDimSTV3JV6QXUm8JgbAfDXTZqnU"
+    "address": "4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG"
   }
 }

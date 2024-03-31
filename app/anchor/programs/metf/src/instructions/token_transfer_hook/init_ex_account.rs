@@ -8,6 +8,8 @@ use anchor_spl::{
 };
 use spl_tlv_account_resolution::state::ExtraAccountMetaList;
 use spl_transfer_hook_interface::instruction::ExecuteInstruction;
+
+use crate::constants::EXTRA_ACCOUNT_META_SEED;
 #[derive(Accounts)]
 pub struct InitializeExtraAccountMetaList<'info> {
     #[account(mut)]
@@ -32,48 +34,39 @@ impl<'info> InitializeExtraAccountMetaList<'info> {
         bumps: &InitializeExtraAccountMetaListBumps,
         program_id: &Pubkey,
     ) -> Result<()> {
-        init_ex_account(
+        let account_metas = vec![];
+        // calculate account size
+        let account_size = ExtraAccountMetaList::size_of(account_metas.len())? as u64;
+        // calculate minimum required lamports
+        let lamports = Rent::get()?.minimum_balance(account_size as usize);
+
+        let mint = self.mint.key();
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            EXTRA_ACCOUNT_META_SEED.as_ref(),
+            &mint.as_ref(),
+            &[bumps.extra_account_meta_list],
+        ]];
+
+        // create ExtraAccountMetaList account
+        create_account(
+            CpiContext::new(
+                self.system_program.to_account_info(),
+                CreateAccount {
+                    from: self.payer.to_account_info(),
+                    to: self.extra_account_meta_list.to_account_info(),
+                },
+            )
+            .with_signer(signer_seeds),
+            lamports,
+            account_size,
             program_id,
-            &self.payer,
-            &self.mint.to_account_info(),
-            &self.extra_account_meta_list.to_account_info(),
-            &bumps.extra_account_meta_list,
-            &self.system_program,
         )?;
 
-        // let account_metas = vec![];
-        // // calculate account size
-        // let account_size = ExtraAccountMetaList::size_of(account_metas.len())? as u64;
-        // // calculate minimum required lamports
-        // let lamports = Rent::get()?.minimum_balance(account_size as usize);
-
-        // let mint = self.mint.key();
-        // let signer_seeds: &[&[&[u8]]] = &[&[
-        //     b"extra-account-metas",
-        //     &mint.as_ref(),
-        //     &[bumps.extra_account_meta_list],
-        // ]];
-
-        // // create ExtraAccountMetaList account
-        // create_account(
-        //     CpiContext::new(
-        //         self.system_program.to_account_info(),
-        //         CreateAccount {
-        //             from: self.payer.to_account_info(),
-        //             to: self.extra_account_meta_list.to_account_info(),
-        //         },
-        //     )
-        //     .with_signer(signer_seeds),
-        //     lamports,
-        //     account_size,
-        //     program_id,
-        // )?;
-
-        // // initialize ExtraAccountMetaList account with extra accounts
-        // ExtraAccountMetaList::init::<ExecuteInstruction>(
-        //     &mut self.extra_account_meta_list.try_borrow_mut_data()?,
-        //     &account_metas,
-        // )?;
+        // initialize ExtraAccountMetaList account with extra accounts
+        ExtraAccountMetaList::init::<ExecuteInstruction>(
+            &mut self.extra_account_meta_list.try_borrow_mut_data()?,
+            &account_metas,
+        )?;
         Ok(())
     }
 }

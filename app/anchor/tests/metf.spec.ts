@@ -4,10 +4,20 @@ import { Metf } from '../target/types/metf';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_2022_PROGRAM_ID,
+  createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
+  getMint,
+  getOrCreateAssociatedTokenAccount,
+  getTransferFeeConfig,
+  getTransferHook,
+  transferCheckedWithFeeAndTransferHook,
 } from '@solana/spl-token';
 
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import {
+  LAMPORTS_PER_SOL,
+  Transaction,
+  sendAndConfirmTransaction,
+} from '@solana/web3.js';
 import { TransferHook } from '../target/types/transfer_hook';
 describe('metf', () => {
   // Configure the client to use the local cluster.
@@ -36,17 +46,57 @@ describe('metf', () => {
     return signature;
   };
 
-  const [admin, user] = [
+  async function readTransferFeeConfig(mint: anchor.web3.PublicKey) {
+    const mintInfo = await getMint(
+      connection,
+      mint,
+      undefined,
+      TOKEN_2022_PROGRAM_ID
+    );
+
+    const transferFeeConfig = await getTransferFeeConfig(mintInfo);
+    console.log(
+      '\nTransfer Fee Config:',
+      JSON.stringify(
+        transferFeeConfig,
+        (_, v) => (typeof v === 'bigint' ? v.toString() : v),
+        2
+      )
+    );
+    return transferFeeConfig;
+  }
+
+  async function calculateTransferFee(
+    mint: anchor.web3.PublicKey,
+    transferAmount: bigint
+  ) {
+    const feeConfig = await readTransferFeeConfig(mint);
+    if (!feeConfig) {
+      throw new Error('Transfer fee config not found');
+    }
+    const feeBasisPoints = feeConfig.newerTransferFee.transferFeeBasisPoints;
+    const maxFee = feeConfig.newerTransferFee.maximumFee;
+    const calcFee = (transferAmount * BigInt(feeBasisPoints)) / BigInt(10000);
+    const expectedFee = calcFee > maxFee ? maxFee : calcFee;
+    return expectedFee;
+  }
+
+  const [admin, user, buyer] = [
+    anchor.web3.Keypair.generate(),
     anchor.web3.Keypair.generate(),
     anchor.web3.Keypair.generate(),
   ];
+
+  console.log('Admin:', admin.publicKey.toBase58());
+  console.log('User:', user.publicKey.toBase58());
+  console.log('Buyer:', buyer.publicKey.toBase58());
   const CONFIG_SEED = 'config';
   const PERSON_SEED = 'person';
 
   let configPda: anchor.web3.PublicKey;
-
+  let configBump: number;
   beforeAll(async () => {
-    [configPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [configPda, configBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from(CONFIG_SEED)],
       program.programId
     );
@@ -54,7 +104,7 @@ describe('metf', () => {
 
   it('Airdrop', async () => {
     await Promise.all(
-      [admin, user].map(async (account) => {
+      [admin, user, buyer].map(async (account) => {
         await connection
           .requestAirdrop(account.publicKey, LAMPORTS_PER_SOL * 10)
           .then(confirmTx);
@@ -74,12 +124,19 @@ describe('metf', () => {
       .signers([admin])
       .rpc();
     log(tx);
+
+    const configInfo = await program.account.config.fetch(configPda);
+    expect(configInfo.bump).toEqual(configBump);
+    expect(configInfo.admin).toEqual(admin.publicKey);
+    expect(configInfo.transferHook).toEqual(transferHookProgram.programId);
   });
 
   const [personPda] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from(PERSON_SEED), user.publicKey.toBuffer()],
     program.programId
   );
+
+  console.log('Person PDA:', personPda.toBase58());
   const metadata = {
     name: 'LEO TOKEN',
     symbol: 'LEOT',
@@ -91,7 +148,7 @@ describe('metf', () => {
   const [extraAccountMetaListPDA] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('extra-account-metas'), mint.publicKey.toBuffer()],
-      program.programId
+      transferHookProgram.programId
     );
 
   const vault = getAssociatedTokenAddressSync(
@@ -118,46 +175,112 @@ describe('metf', () => {
         person: personPda,
         mint: mint.publicKey,
         vault,
-        extraAccountMetaList: extraAccountMetaListPDA,
+        config: configPda,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       })
       .signers([mint, user])
+      .postInstructions([
+        await transferHookProgram.methods
+          .initializeExtraAccountMetaList()
+          .accounts({
+            payer: user.publicKey,
+            extraAccountMetaList: extraAccountMetaListPDA,
+            mint: mint.publicKey,
+            ownerWithoutFee: program.programId,
+            tokenProgram: TOKEN_2022_PROGRAM_ID,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            systemProgram: anchor.web3.SystemProgram.programId,
+          })
+          .signers([user])
+          .instruction(),
+      ])
       .rpc();
     log(tx);
 
-    // const initTransferHook = await transferHookProgram.methods
-    //   .initializeExtraAccountMetaList()
-    //   .accounts({
-    //     payer: admin.publicKey,
-    //     extraAccountMetaList: extraAccountMetaListPDA,
-    //     mint: mint.publicKey,
-    //     tokenProgram: TOKEN_2022_PROGRAM_ID,
-    //     associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    //     systemProgram: anchor.web3.SystemProgram.programId,
-    //   })
-    //   .signers([admin])
-    //   .rpc();
-    // log(initTransferHook);
+    const mintInfo = await getMint(
+      connection,
+      mint.publicKey,
+      undefined,
+      TOKEN_2022_PROGRAM_ID
+    );
+    const transferHook = getTransferHook(mintInfo);
+    console.log('Transfer Hook:', JSON.stringify(transferHook, null, 2));
+  });
+
+  it.skip('Should transfer token', async () => {
+    const buyer_ata = await getOrCreateAssociatedTokenAccount(
+      connection,
+      user,
+      mint.publicKey,
+      buyer.publicKey,
+      false,
+      undefined,
+      undefined,
+      TOKEN_2022_PROGRAM_ID
+    );
+    const transferAmount = BigInt(1000000000);
+    const expectedFee = await calculateTransferFee(
+      mint.publicKey,
+      transferAmount
+    );
+    await transferCheckedWithFeeAndTransferHook(
+      connection,
+      user,
+      user_ata,
+      mint.publicKey,
+      buyer_ata.address,
+      user.publicKey,
+      transferAmount,
+      6,
+      expectedFee,
+      [],
+      undefined,
+      TOKEN_2022_PROGRAM_ID
+    );
   });
 
   it('Should buy a token', async () => {
+    const buyer_ata = getAssociatedTokenAddressSync(
+      mint.publicKey,
+      buyer.publicKey,
+      false,
+      TOKEN_2022_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+    // const createAccountIx = createAssociatedTokenAccountIdempotentInstruction(
+    //   buyer.publicKey,
+    //   buyer_ata,
+    //   buyer.publicKey,
+    //   mint.publicKey,
+    //   TOKEN_2022_PROGRAM_ID,
+    //   ASSOCIATED_TOKEN_PROGRAM_ID
+    // );
+
     const tx = await program.methods
       .buyToken(new anchor.BN(100 * 10 ** 6))
       .accounts({
-        signer: user.publicKey,
+        signer: buyer.publicKey,
         person: personPda,
         mint: mint.publicKey,
         vault,
-        userAta: user_ata,
+        userAta: buyer_ata,
+        extraAccountMetaList: extraAccountMetaListPDA,
+        ownerWithoutFee: program.programId,
+        transferHook: transferHookProgram.programId,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
       })
-      .signers([user])
+      .signers([buyer])
+      // .instruction();
       .rpc();
     log(tx);
+    // const transaction = new Transaction().add(createAccountIx).add(tx);
+    // await sendAndConfirmTransaction(connection, transaction, [buyer], {
+    //   skipPreflight: true,
+    // }).then(log);
   });
 });

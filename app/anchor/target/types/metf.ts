@@ -18,6 +18,11 @@ export type Metf = {
       "value": "[118, 97, 117, 108, 116]"
     },
     {
+      "name": "EXTRA_ACCOUNT_META_SEED",
+      "type": "bytes",
+      "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -74,8 +79,8 @@ export type Metf = {
           "isSigner": false
         },
         {
-          "name": "extraAccountMetaList",
-          "isMut": true,
+          "name": "config",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -138,6 +143,21 @@ export type Metf = {
           "docs": [
             "CHECK"
           ]
+        },
+        {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "extraAccountMetaList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "token2022Program",
@@ -276,6 +296,10 @@ export type Metf = {
           },
           {
             "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "transferHook",
             "type": "publicKey"
           },
           {
@@ -350,6 +374,11 @@ export const IDL: Metf = {
       "value": "[118, 97, 117, 108, 116]"
     },
     {
+      "name": "EXTRA_ACCOUNT_META_SEED",
+      "type": "bytes",
+      "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -406,8 +435,8 @@ export const IDL: Metf = {
           "isSigner": false
         },
         {
-          "name": "extraAccountMetaList",
-          "isMut": true,
+          "name": "config",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -470,6 +499,21 @@ export const IDL: Metf = {
           "docs": [
             "CHECK"
           ]
+        },
+        {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "extraAccountMetaList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "token2022Program",
@@ -608,6 +652,10 @@ export const IDL: Metf = {
           },
           {
             "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "transferHook",
             "type": "publicKey"
           },
           {

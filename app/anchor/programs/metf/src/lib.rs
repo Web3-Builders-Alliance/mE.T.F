@@ -3,11 +3,12 @@ pub mod constants;
 pub mod error;
 pub mod instructions;
 pub mod state;
+
 pub use instructions::*;
 
 pub use state::InitPersonTokenParams;
 
-declare_id!("4sRHEgBbnAg7snoVaDimSTV3JV6QXUm8JgbAfDXTZqnU");
+declare_id!("4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG");
 
 #[program]
 pub mod metf {
@@ -24,8 +25,7 @@ pub mod metf {
         params: InitPersonTokenParams,
     ) -> Result<()> {
         ctx.accounts.initialize(&ctx.bumps)?;
-        ctx.accounts
-            .init_token_mint(params.clone(), &ctx.bumps, &ctx.program_id)
+        ctx.accounts.init_token_mint(params.clone(), &ctx.bumps)
     }
 
     pub fn buy_token(ctx: Context<BuyToken>, amount: u64) -> Result<()> {

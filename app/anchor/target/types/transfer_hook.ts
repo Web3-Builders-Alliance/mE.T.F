@@ -21,6 +21,11 @@ export type TransferHook = {
           "isSigner": false
         },
         {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -63,6 +68,11 @@ export type TransferHook = {
         },
         {
           "name": "extraAccountMetaList",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
           "isMut": false,
           "isSigner": false
         }
@@ -100,6 +110,11 @@ export const IDL: TransferHook = {
           "isSigner": false
         },
         {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -142,6 +157,11 @@ export const IDL: TransferHook = {
         },
         {
           "name": "extraAccountMetaList",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
           "isMut": false,
           "isSigner": false
         }

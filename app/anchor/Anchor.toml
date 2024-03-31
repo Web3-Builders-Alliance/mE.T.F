@@ -5,15 +5,15 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-metf = "4sRHEgBbnAg7snoVaDimSTV3JV6QXUm8JgbAfDXTZqnU"
-transfer-hook = "6Sz4DCnX1jh6xF6krFSf1mPMtt4kgyu763HCWQALMinn"
+metf = "4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG"
+transfer-hook = "2TJHnk4FMjMXDLYwS6MiSXBEEBGJtqXejnPZzoyGpZC6"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-wallet = "/home/leo/.config/solana/id.json"
+wallet = "/Users/leo/.config/solana/id.json"
 
 [scripts]
 test = "../node_modules/.bin/nx run anchor:jest --skip-nx-cache"
