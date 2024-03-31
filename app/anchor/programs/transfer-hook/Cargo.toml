@@ -1,12 +1,12 @@
 [package]
-name = "metf"
+name = "transfer-hook"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "metf"
+name = "transfer_hook"
 
 [features]
 no-entrypoint = []
@@ -16,10 +16,8 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-anchor-lang = { version = "0.29.0", features = ["init-if-needed"] }
+anchor-lang = "0.29.0"
 anchor-spl = "0.29.0"
 solana-program = "=1.18.7"
-spl-pod = "0.2.2"
-spl-token-metadata-interface = "0.3.3"
-spl-transfer-hook-interface = "0.6.3"
 spl-tlv-account-resolution = "0.6.3"
+spl-transfer-hook-interface = "0.6.3"
