@@ -1,8 +1,8 @@
 use std::ops::Mul;
 
 use crate::{
-    constants::{PERSON_SEED, TOKEN_LIMIT_AMOUNT},
-    state::{InitPersonTokenParams, Person},
+    constants::{CONFIG_SEED, PERSON_SEED, TOKEN_LIMIT_AMOUNT},
+    state::{Config, InitPersonTokenParams, Person},
 };
 use anchor_lang::{prelude::*, system_program::create_account};
 use anchor_lang::{solana_program::sysvar::rent::ID as RENT_ID, system_program::CreateAccount};
@@ -54,6 +54,11 @@ pub struct InitPersonToken<'info> {
     )]
     /// CHECK: it is fine to use vault as the associated token account.
     pub vault: UncheckedAccount<'info>,
+    #[account(
+        seeds = [CONFIG_SEED.as_ref()],
+        bump
+      )]
+    pub config: Account<'info, Config>,
     pub token_2022_program: Program<'info, Token2022>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -104,13 +109,12 @@ impl<'info> InitPersonToken<'info> {
             &spl_token_2022::id(),
         )?;
 
-        // add stransfer hook and metadata pointer
         invoke(
             &intialize_transfer_hook(
                 &self.token_2022_program.key(),
                 &self.mint.key(),
                 Some(self.person.key()),
-                None, // Some(*ctx.program_id),
+                Some(self.config.transfer_hook),
             )?,
             &vec![self.mint.to_account_info()],
         )?;
@@ -231,9 +235,10 @@ impl<'info> InitPersonToken<'info> {
         self.person.init(
             *self.signer.to_account_info().key,
             *self.mint.to_account_info().key,
-            *self.mint.to_account_info().key,
+            self.config.transfer_hook,
+            *self.vault.to_account_info().key,
             bumps.person,
-        );
+        )?;
         Ok(())
     }
 }
