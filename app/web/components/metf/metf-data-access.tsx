@@ -24,7 +24,7 @@ export function useMetfProgram() {
 
   const greet = useMutation({
     mutationKey: ['metf', 'greet', { cluster }],
-    mutationFn: (keypair: Keypair) => program.methods.greet().rpc(),
+    mutationFn: (keypair: Keypair) => program.methods.init().rpc(),
     onSuccess: (signature) => {
       transactionToast(signature);
     },
