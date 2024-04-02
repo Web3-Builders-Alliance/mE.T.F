@@ -53,7 +53,16 @@ export type Metf = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "fee",
+          "type": "u64"
+        },
+        {
+          "name": "feeWallet",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "initPersonToken",
@@ -277,6 +286,14 @@ export type Metf = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "feeWallet",
+            "type": "publicKey"
           }
         ]
       }
@@ -409,7 +426,16 @@ export const IDL: Metf = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "fee",
+          "type": "u64"
+        },
+        {
+          "name": "feeWallet",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "initPersonToken",
@@ -633,6 +659,14 @@ export const IDL: Metf = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "feeWallet",
+            "type": "publicKey"
           }
         ]
       }

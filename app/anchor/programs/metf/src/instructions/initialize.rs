@@ -20,11 +20,13 @@ pub struct Initialize<'info> {
 }
 
 impl<'info> Initialize<'info> {
-    pub fn init(&mut self, bumps: &InitializeBumps) -> Result<()> {
+    pub fn init(&mut self, fee: u64, fee_wallet: Pubkey, bumps: &InitializeBumps) -> Result<()> {
         self.config.init(
             self.signer.to_account_info().key(),
             self.transfer_hook.to_account_info().key(),
             bumps.config,
+            fee,
+            fee_wallet,
         );
         Ok(())
     }

@@ -4,7 +4,6 @@ import { Metf } from '../target/types/metf';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_2022_PROGRAM_ID,
-  createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
   getMint,
   getOrCreateAssociatedTokenAccount,
@@ -13,11 +12,7 @@ import {
   transferCheckedWithFeeAndTransferHook,
 } from '@solana/spl-token';
 
-import {
-  LAMPORTS_PER_SOL,
-  Transaction,
-  sendAndConfirmTransaction,
-} from '@solana/web3.js';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TransferHook } from '../target/types/transfer_hook';
 describe('metf', () => {
   // Configure the client to use the local cluster.
@@ -87,14 +82,19 @@ describe('metf', () => {
     anchor.web3.Keypair.generate(),
   ];
 
+  const feeWallet = anchor.web3.Keypair.generate();
+
   console.log('Admin:', admin.publicKey.toBase58());
   console.log('User:', user.publicKey.toBase58());
   console.log('Buyer:', buyer.publicKey.toBase58());
+  console.log('Fee Wallet:', feeWallet.publicKey.toBase58());
   const CONFIG_SEED = 'config';
   const PERSON_SEED = 'person';
 
   let configPda: anchor.web3.PublicKey;
   let configBump: number;
+  const fee = new anchor.BN(0.02 * LAMPORTS_PER_SOL);
+
   beforeAll(async () => {
     [configPda, configBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from(CONFIG_SEED)],
@@ -114,7 +114,7 @@ describe('metf', () => {
 
   it('Should initialize the program', async () => {
     const tx = await program.methods
-      .init()
+      .init(fee, feeWallet.publicKey)
       .accounts({
         signer: admin.publicKey,
         transferHook: transferHookProgram.programId,
@@ -129,6 +129,8 @@ describe('metf', () => {
     expect(configInfo.bump).toEqual(configBump);
     expect(configInfo.admin).toEqual(admin.publicKey);
     expect(configInfo.transferHook).toEqual(transferHookProgram.programId);
+    expect(configInfo.feeWallet).toEqual(feeWallet.publicKey);
+    expect(configInfo.fee.toString()).toEqual(fee.toString());
   });
 
   const [personPda] = anchor.web3.PublicKey.findProgramAddressSync(
