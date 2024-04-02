@@ -23,6 +23,11 @@ export type Metf = {
       "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
     },
     {
+      "name": "FEE_BANK_SEED",
+      "type": "bytes",
+      "value": "[102, 101, 101, 45, 98, 97, 110, 107]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -48,6 +53,11 @@ export type Metf = {
           "isSigner": false
         },
         {
+          "name": "feeBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -57,10 +67,6 @@ export type Metf = {
         {
           "name": "fee",
           "type": "u64"
-        },
-        {
-          "name": "feeWallet",
-          "type": "publicKey"
         }
       ]
     },
@@ -90,6 +96,11 @@ export type Metf = {
         {
           "name": "config",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeBank",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -292,7 +303,7 @@ export type Metf = {
             "type": "u64"
           },
           {
-            "name": "feeWallet",
+            "name": "feeBank",
             "type": "publicKey"
           }
         ]
@@ -396,6 +407,11 @@ export const IDL: Metf = {
       "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
     },
     {
+      "name": "FEE_BANK_SEED",
+      "type": "bytes",
+      "value": "[102, 101, 101, 45, 98, 97, 110, 107]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -421,6 +437,11 @@ export const IDL: Metf = {
           "isSigner": false
         },
         {
+          "name": "feeBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -430,10 +451,6 @@ export const IDL: Metf = {
         {
           "name": "fee",
           "type": "u64"
-        },
-        {
-          "name": "feeWallet",
-          "type": "publicKey"
         }
       ]
     },
@@ -463,6 +480,11 @@ export const IDL: Metf = {
         {
           "name": "config",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeBank",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -665,7 +687,7 @@ export const IDL: Metf = {
             "type": "u64"
           },
           {
-            "name": "feeWallet",
+            "name": "feeBank",
             "type": "publicKey"
           }
         ]

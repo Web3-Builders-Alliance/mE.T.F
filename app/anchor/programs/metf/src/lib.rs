@@ -16,8 +16,8 @@ pub mod metf {
     use spl_transfer_hook_interface::instruction::TransferHookInstruction;
 
     use super::*;
-    pub fn init(ctx: Context<Initialize>, fee: u64, fee_wallet: Pubkey) -> Result<()> {
-        ctx.accounts.init(fee, fee_wallet, &ctx.bumps)
+    pub fn init(ctx: Context<Initialize>, fee: u64) -> Result<()> {
+        ctx.accounts.init(fee, &ctx.bumps)
     }
 
     pub fn init_person_token(

@@ -12,7 +12,7 @@ import {
   transferCheckedWithFeeAndTransferHook,
 } from '@solana/spl-token';
 
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TransferHook } from '../target/types/transfer_hook';
 describe('metf', () => {
   // Configure the client to use the local cluster.
@@ -82,18 +82,22 @@ describe('metf', () => {
     anchor.web3.Keypair.generate(),
   ];
 
-  const feeWallet = anchor.web3.Keypair.generate();
-
   console.log('Admin:', admin.publicKey.toBase58());
   console.log('User:', user.publicKey.toBase58());
   console.log('Buyer:', buyer.publicKey.toBase58());
-  console.log('Fee Wallet:', feeWallet.publicKey.toBase58());
+
   const CONFIG_SEED = 'config';
   const PERSON_SEED = 'person';
 
   let configPda: anchor.web3.PublicKey;
   let configBump: number;
+
   const fee = new anchor.BN(0.02 * LAMPORTS_PER_SOL);
+  const [feeBank] = PublicKey.findProgramAddressSync(
+    [Buffer.from('fee-bank')],
+    program.programId
+  );
+  console.log('Fee Bank:', feeBank.toBase58());
 
   beforeAll(async () => {
     [configPda, configBump] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -114,11 +118,12 @@ describe('metf', () => {
 
   it('Should initialize the program', async () => {
     const tx = await program.methods
-      .init(fee, feeWallet.publicKey)
+      .init(fee)
       .accounts({
         signer: admin.publicKey,
         transferHook: transferHookProgram.programId,
         config: configPda,
+        feeBank,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([admin])
@@ -129,7 +134,7 @@ describe('metf', () => {
     expect(configInfo.bump).toEqual(configBump);
     expect(configInfo.admin).toEqual(admin.publicKey);
     expect(configInfo.transferHook).toEqual(transferHookProgram.programId);
-    expect(configInfo.feeWallet).toEqual(feeWallet.publicKey);
+    expect(configInfo.feeBank).toEqual(feeBank);
     expect(configInfo.fee.toString()).toEqual(fee.toString());
   });
 
@@ -177,6 +182,7 @@ describe('metf', () => {
         person: personPda,
         mint: mint.publicKey,
         vault,
+        feeBank,
         config: configPda,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,

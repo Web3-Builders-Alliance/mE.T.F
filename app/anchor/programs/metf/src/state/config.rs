@@ -8,7 +8,7 @@ pub struct Config {
     pub transfer_hook: Pubkey,
     pub bump: u8,
     pub fee: u64,
-    pub fee_wallet: Pubkey,
+    pub fee_bank: Pubkey,
 }
 
 impl Space for Config {
@@ -23,12 +23,12 @@ impl Config {
         transfer_hook: Pubkey,
         bump: u8,
         fee: u64,
-        fee_wallet: Pubkey,
+        fee_bank: Pubkey,
     ) {
         self.admin = admin;
         self.transfer_hook = transfer_hook;
         self.bump = bump;
         self.fee = fee;
-        self.fee_wallet = fee_wallet;
+        self.fee_bank = fee_bank;
     }
 }
