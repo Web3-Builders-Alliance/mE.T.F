@@ -46,3 +46,4 @@ anchor/target/.rustc_info.json
 test-ledger
 .yarn
 pnpm-lock.yaml
+.env.local

@@ -29,8 +29,10 @@ const nextConfig = {
         pathname: '/ipfs/**',
       },
     ],
-
   },
+  experimental: {
+    serverActions: true
+  }
 };
 
 const plugins = [
