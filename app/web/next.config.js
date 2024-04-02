@@ -31,8 +31,8 @@ const nextConfig = {
     ],
   },
   experimental: {
-    serverActions: true
-  }
+    serverActions: true, // Add this line to enable server components
+  },
 };
 
 const plugins = [
