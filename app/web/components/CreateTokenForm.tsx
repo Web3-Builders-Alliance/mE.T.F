@@ -2,22 +2,29 @@
 import savePersonToken from '@/actions/savePersonToken';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  PaperAirplaneIcon,
-  PhotoIcon,
-  UserCircleIcon,
-  XCircleIcon,
-} from '@heroicons/react/24/solid';
 
 import * as yup from 'yup';
+import { IconCircleX, IconPhotoScan, IconSend } from '@tabler/icons-react';
+import { useRef, useState } from 'react';
 
-const schema = yup
-  .object({
-    name: yup.string().max(50).required(),
-    symbol: yup.string().required(),
-  })
-  .required();
+const schema = yup.object().shape({
+  name: yup.string().max(50).required('Name is required'),
+  symbol: yup.string().max(6).required('Symbol is required'),
+  description: yup.string().max(200),
+  image: yup
+    .mixed<File>()
+    .required('You need to provide a file')
+    .test('fileSize', 'The file is too large', (value) => {
+      if (!value) {
+        return true;
+      }
+      return value.size <= 10485760;
+    }),
+});
+
 const CreateTokenForm = () => {
+  const inputRef = useRef<HTMLInputElement | null>();
+  const [image, setImage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -36,6 +43,12 @@ const CreateTokenForm = () => {
       formData
     );
     console.log('result', result);
+  };
+
+  const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(URL.createObjectURL(event.target.files[0]));
+    }
   };
 
   return (
@@ -74,7 +87,7 @@ const CreateTokenForm = () => {
           <div className="mt-2">
             <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500">
               <input
-                defaultValue="My personal token"
+                defaultValue="MPT"
                 {...register('symbol', { required: true })}
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-1 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               />
@@ -108,10 +121,18 @@ const CreateTokenForm = () => {
           Photo
         </label>
         <div className="mt-2 flex items-center gap-x-3">
-          <UserCircleIcon
-            className="h-24 w-24 text-gray-500"
-            aria-hidden="true"
-          />
+          {!image ? (
+            <IconPhotoScan
+              className="h-24 w-24 text-gray-500"
+              aria-hidden="true"
+            />
+          ) : (
+            <img
+              src={image}
+              alt="Token image"
+              className="h-24 w-24 rounded-lg object-cover"
+            />
+          )}
           <Controller
             control={control}
             name="image"
@@ -120,17 +141,21 @@ const CreateTokenForm = () => {
               return (
                 <input
                   {...field}
-                  value={value?.fileName}
+                  value={(value as any)?.filename}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) {
                       onChange(file);
+                      onImageChange(event);
                     }
                   }}
+                  ref={(instance) => {
+                    inputRef.current = instance;
+                  }}
                   type="file"
-                  id="image"
                   multiple={false}
-                  className="sr-only"
+                  className="sr-only hidden"
+                  accept=".jpg,.png,.jpeg"
                 />
               );
             }}
@@ -138,6 +163,9 @@ const CreateTokenForm = () => {
           <button
             type="button"
             className="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+            onClick={() => {
+              inputRef.current?.click();
+            }}
           >
             Change
           </button>
@@ -148,11 +176,11 @@ const CreateTokenForm = () => {
       </div>
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button type="button" className="btn btn-ghost">
-          <XCircleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+          <IconCircleX className="h-5 w-5 mr-2" aria-hidden="true" />
           Cancel
         </button>
         <button type="submit" className="btn btn-primary">
-          <PaperAirplaneIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+          <IconSend className="h-5 w-5 mr-2" aria-hidden="true" />
           Save
         </button>
       </div>
