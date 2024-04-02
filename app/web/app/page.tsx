@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Page() {
+
   return (
     <main className="isolate container min-h-full h-full">
       <div className="flex flex-col justify-center items-center space-y-5">
