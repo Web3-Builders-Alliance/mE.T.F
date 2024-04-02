@@ -1,48 +1,87 @@
 'use client';
-import savePersonToken from '@/actions/savePersonToken';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import toast from 'react-hot-toast';
 import * as yup from 'yup';
 import { IconCircleX, IconPhotoScan, IconSend } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
+import useSaveToken from '@/hooks/useSaveToken';
+import useUserInfo from '@/hooks/useUserInfo';
+import { Model } from '@/lib/enum';
 
 const schema = yup.object().shape({
   name: yup.string().max(50).required('Name is required'),
   symbol: yup.string().max(6).required('Symbol is required'),
+  model: yup.string().required('Model is required'),
   description: yup.string().max(200),
-  image: yup
-    .mixed<File>()
-    .required('You need to provide a file')
-    .test('fileSize', 'The file is too large', (value) => {
-      if (!value) {
-        return true;
-      }
-      return value.size <= 10485760;
-    }),
+  photo: yup.string().url().required('Photo is required'),
+  // image: yup
+  //   .mixed<File>()
+  //   .required('You need to provide a file')
+  //   .test('fileSize', 'The file is too large', (value) => {
+  //     if (!value) {
+  //       return true;
+  //     }
+  //     return value.size <= 10485760;
+  //   }),
 });
+
+const models = [
+  {
+    id: Model.StabilityModel,
+    name: 'Stability Model',
+    description:
+      'Ensures a stable system with token value increasing gradually over time, while maintaining appeal for long-term token holders',
+  },
+  {
+    id: Model.LiquidityBoostModel,
+    name: 'Liquidity Boost Model',
+    description:
+      'Designed to increase token liquidity, fostering a flexible trading environment and encouraging user participation to bolster token liquidity.',
+  },
+  {
+    id: Model.SecurityFocusModel,
+    name: 'Security Focus Model',
+    description:
+      'Aims to create a token with low liquidity and reduced susceptibility to attacks by employing a low-curvature bonding curve.',
+  },
+  {
+    id: Model.AccelerationModel,
+    name: 'Acceleration Model',
+    description:
+      'Promotes rapid growth and encourages frequent trading by utilizing a high-curvature bonding curve, stimulating user engagement and trading activity.',
+  },
+];
 
 const CreateTokenForm = () => {
   const inputRef = useRef<HTMLInputElement | null>();
+  const userInfo = useUserInfo();
   const [image, setImage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      model: 'StabilityModel',
+      name: userInfo.name,
+      symbol: '',
+      photo: userInfo.photo,
+    },
+  });
+  const saveToken = useSaveToken();
   const onSubmit = async (data: any) => {
-    const formData = new FormData();
-    formData.set('file', data.image);
-    const result = await savePersonToken(
-      {
-        name: data.name,
-        symbol: data.symbol,
-        description: data.description,
-      },
-      formData
-    );
-    console.log('result', result);
+    try {
+      await saveToken.mutateAsync(data);
+    } catch (error) {
+      toast.error(
+        <div className={'text-center'}>
+          <div className="text-lg">Token creation failed</div>
+        </div>
+      );
+    }
   };
 
   const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +112,11 @@ const CreateTokenForm = () => {
                 defaultValue="My personal token"
                 {...register('name', { required: true })}
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-1 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                disabled
               />
             </div>
           </div>
+          <p className="text-error text-xs mt-1">{errors.name?.message}</p>
         </div>
         <div className="sm:col-span-1">
           <label
@@ -93,6 +134,7 @@ const CreateTokenForm = () => {
               />
             </div>
           </div>
+          <p className="text-error text-xs mt-1">{errors.symbol?.message}</p>
         </div>
         <div className="col-span-full">
           <label
@@ -121,66 +163,64 @@ const CreateTokenForm = () => {
           Photo
         </label>
         <div className="mt-2 flex items-center gap-x-3">
-          {!image ? (
-            <IconPhotoScan
-              className="h-24 w-24 text-gray-500"
-              aria-hidden="true"
-            />
-          ) : (
-            <img
-              src={image}
-              alt="Token image"
-              className="h-24 w-24 rounded-lg object-cover"
-            />
-          )}
-          <Controller
-            control={control}
-            name="image"
-            rules={{ required: 'Token image is required' }}
-            render={({ field: { value, onChange, ...field } }) => {
-              return (
-                <input
-                  {...field}
-                  value={(value as any)?.filename}
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    if (file) {
-                      onChange(file);
-                      onImageChange(event);
-                    }
-                  }}
-                  ref={(instance) => {
-                    inputRef.current = instance;
-                  }}
-                  type="file"
-                  multiple={false}
-                  className="sr-only hidden"
-                  accept=".jpg,.png,.jpeg"
-                />
-              );
-            }}
+          <img
+            src={userInfo.photo}
+            alt="Token image"
+            className="h-24 w-24 rounded-lg object-cover"
           />
-          <button
-            type="button"
-            className="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
-            onClick={() => {
-              inputRef.current?.click();
-            }}
-          >
-            Change
-          </button>
-          <p className="text-xs leading-5 text-gray-400">
-            PNG, JPG, GIF up to 10MB
-          </p>
         </div>
+      </div>
+      <div className="col-span-full">
+        <label
+          htmlFor="photo"
+          className="block text-sm font-medium leading-6 text-white"
+        >
+          What model do you want to use?
+        </label>
+        <div className="mt-2 flex items-center gap-x-3 w-full">
+          <div className="space-y-5">
+            {models.map((model) => (
+              <div key={model.id} className="relative flex items-start">
+                <div className="flex h-6 items-center">
+                  <input
+                    {...register('model')}
+                    id={model.id}
+                    aria-describedby={`${model.id}-description`}
+                    name="model"
+                    type="radio"
+                    defaultChecked={model.id === Model.StabilityModel}
+                    className="h-4 w-4 border-gray-300  radio radio-warning"
+                  />
+                </div>
+                <div className="ml-3 text-sm leading-6">
+                  <label htmlFor={model.id} className="font-medium">
+                    {model.name}
+                  </label>
+                  <p id={`${model.id}-description`} className="text-gray-500">
+                    {model.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="text-error text-xs mt-1">{errors.model?.message}</p>
       </div>
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button type="button" className="btn btn-ghost">
           <IconCircleX className="h-5 w-5 mr-2" aria-hidden="true" />
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
-          <IconSend className="h-5 w-5 mr-2" aria-hidden="true" />
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={saveToken.isPending}
+        >
+          {saveToken.isPending ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            <IconSend className="h-5 w-5 mr-2" aria-hidden="true" />
+          )}
           Save
         </button>
       </div>
