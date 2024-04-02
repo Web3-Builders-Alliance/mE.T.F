@@ -29,7 +29,9 @@ const nextConfig = {
         pathname: '/ipfs/**',
       },
     ],
-
+  },
+  experimental: {
+    serverActions: true, // Add this line to enable server components
   },
 };
 
