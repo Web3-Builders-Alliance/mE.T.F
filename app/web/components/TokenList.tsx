@@ -9,9 +9,9 @@ const TokenList = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {data.map((token) => (
-        <Link href={`/mint/${token.mint}`}>
-          <div className="card card-side bg-base-100 shadow-xl">
-            <figure>
+        <Link href={`/mint/${token.mint}`} key={token.mint}>
+          <div className="card card-side bg-base-100 hover:shadow-xl transition-shadow duration-300">
+            <figure className="w-fit">
               <Image
                 src={token.image}
                 alt={token.name}
@@ -21,7 +21,7 @@ const TokenList = () => {
               />
             </figure>
             <div className="card-body">
-              <h3 className="card-title">
+              <h4 className="card-title text-sm">
                 Created by:{' '}
                 <Link
                   href={`/profile/${token.author}`}
@@ -29,10 +29,15 @@ const TokenList = () => {
                 >
                   {token.author.slice(0, 10)}
                 </Link>
-              </h3>
-              <p>Click the button to watch on Jetflix app.</p>
+              </h4>
+              <div className="text-sm">
+                Symbol:{' '}
+                <span className="text-primary font-bold uppercase">
+                  {token.symbol}
+                </span>
+              </div>
               <div className="card-actions justify-end">
-                <button className="btn btn-primary">Watch</button>
+                {/* <button className="btn btn-primary">Watch</button> */}
               </div>
             </div>
           </div>
