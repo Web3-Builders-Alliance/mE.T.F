@@ -116,28 +116,6 @@ describe('metf', () => {
     );
   });
 
-  it('Should initialize the program', async () => {
-    const tx = await program.methods
-      .init(fee)
-      .accounts({
-        signer: admin.publicKey,
-        transferHook: transferHookProgram.programId,
-        config: configPda,
-        feeBank,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .signers([admin])
-      .rpc();
-    log(tx);
-
-    const configInfo = await program.account.config.fetch(configPda);
-    expect(configInfo.bump).toEqual(configBump);
-    expect(configInfo.admin).toEqual(admin.publicKey);
-    expect(configInfo.transferHook).toEqual(transferHookProgram.programId);
-    expect(configInfo.feeBank).toEqual(feeBank);
-    expect(configInfo.fee.toString()).toEqual(fee.toString());
-  });
-
   const [personPda] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from(PERSON_SEED), user.publicKey.toBuffer()],
     program.programId
@@ -149,6 +127,7 @@ describe('metf', () => {
     symbol: 'LEOT',
     decimals: 9,
     uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
+    initPrice: new anchor.BN(10 * 10 ** 6),
   };
   const mint = anchor.web3.Keypair.generate();
 
@@ -172,6 +151,51 @@ describe('metf', () => {
     TOKEN_2022_PROGRAM_ID
   );
 
+  const [personBankPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('person-bank'), mint.publicKey.toBuffer()],
+    program.programId
+  );
+  it('Should initialize the program', async () => {
+    const tx = await program.methods
+      .init(fee)
+      .accounts({
+        signer: admin.publicKey,
+        transferHook: transferHookProgram.programId,
+        config: configPda,
+        feeBank,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([admin])
+      .rpc();
+    log(tx);
+
+    const configInfo = await program.account.config.fetch(configPda);
+    expect(configInfo.bump).toEqual(configBump);
+    expect(configInfo.admin).toEqual(admin.publicKey);
+    expect(configInfo.transferHook).toEqual(transferHookProgram.programId);
+    expect(configInfo.feeBank).toEqual(feeBank);
+    expect(configInfo.fee.toString()).toEqual(fee.toString());
+  });
+
+  const bondingCurveId = new anchor.BN(1);
+  const [bondingCurve1Pda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('bonding-curve'), bondingCurveId.toBuffer('le', 8)],
+    program.programId
+  );
+
+  it('Should create a bonding curve model', async () => {
+    const tx = await program.methods
+      .createBondingModel(bondingCurveId, new anchor.BN(100))
+      .accounts({
+        config: configPda,
+        signer: admin.publicKey,
+        bondingCurve: bondingCurve1Pda,
+      })
+      .signers([admin])
+      .rpc();
+    log(tx);
+  });
+
   it('Should create a user token mint', async () => {
     const tx = await program.methods
       .initPersonToken({
@@ -184,7 +208,9 @@ describe('metf', () => {
         vault,
         feeBank,
         config: configPda,
+        bondCurve: bondingCurve1Pda,
         token2022Program: TOKEN_2022_PROGRAM_ID,
+        personBank: personBankPda,
         systemProgram: anchor.web3.SystemProgram.programId,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -268,7 +294,7 @@ describe('metf', () => {
     // );
 
     const tx = await program.methods
-      .buyToken(new anchor.BN(100 * 10 ** 6))
+      .buyToken(new anchor.BN(1000000 * 10 ** 6))
       .accounts({
         signer: buyer.publicKey,
         person: personPda,
@@ -277,6 +303,9 @@ describe('metf', () => {
         userAta: buyer_ata,
         extraAccountMetaList: extraAccountMetaListPDA,
         ownerWithoutFee: program.programId,
+        config: configPda,
+        bondCurve: bondingCurve1Pda,
+        personBank: personBankPda,
         transferHook: transferHookProgram.programId,
         token2022Program: TOKEN_2022_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,

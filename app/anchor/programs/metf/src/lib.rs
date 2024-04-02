@@ -20,11 +20,19 @@ pub mod metf {
         ctx.accounts.init(fee, &ctx.bumps)
     }
 
+    pub fn create_bonding_model(
+        ctx: Context<CreateBondingModel>,
+        model: u64,
+        c: u64,
+    ) -> Result<()> {
+        ctx.accounts.handler(model, c, &ctx.bumps)
+    }
+
     pub fn init_person_token(
         ctx: Context<InitPersonToken>,
         params: InitPersonTokenParams,
     ) -> Result<()> {
-        ctx.accounts.initialize(&ctx.bumps)?;
+        ctx.accounts.initialize(params.init_price, &ctx.bumps)?;
         ctx.accounts.init_token_mint(params.clone(), &ctx.bumps)
     }
 

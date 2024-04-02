@@ -28,6 +28,16 @@ export type Metf = {
       "value": "[102, 101, 101, 45, 98, 97, 110, 107]"
     },
     {
+      "name": "PERSON_BANK_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110, 45, 98, 97, 110, 107]"
+    },
+    {
+      "name": "BONDING_CURVE_SEED",
+      "type": "bytes",
+      "value": "[98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -71,6 +81,41 @@ export type Metf = {
       ]
     },
     {
+      "name": "createBondingModel",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "model",
+          "type": "u64"
+        },
+        {
+          "name": "c",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "initPersonToken",
       "accounts": [
         {
@@ -101,6 +146,16 @@ export type Metf = {
         {
           "name": "feeBank",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -176,6 +231,21 @@ export type Metf = {
         },
         {
           "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
           "isMut": false,
           "isSigner": false
         },
@@ -282,6 +352,26 @@ export type Metf = {
   ],
   "accounts": [
     {
+      "name": "bondingCurve",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "model",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "c",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "config",
       "type": {
         "kind": "struct",
@@ -337,6 +427,18 @@ export type Metf = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "currentSupply",
+            "type": "u64"
+          },
+          {
+            "name": "initPrice",
+            "type": "u64"
+          },
+          {
+            "name": "bondingCurve",
+            "type": "publicKey"
           }
         ]
       }
@@ -363,6 +465,10 @@ export type Metf = {
           {
             "name": "decimals",
             "type": "u8"
+          },
+          {
+            "name": "initPrice",
+            "type": "u64"
           }
         ]
       }
@@ -378,6 +484,21 @@ export type Metf = {
       "code": 6001,
       "name": "AccountAlreadyInitialized",
       "msg": "Person account is already initialized"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidCValue",
+      "msg": "Invalid c value"
+    },
+    {
+      "code": 6003,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "Overflow"
     }
   ]
 };
@@ -412,6 +533,16 @@ export const IDL: Metf = {
       "value": "[102, 101, 101, 45, 98, 97, 110, 107]"
     },
     {
+      "name": "PERSON_BANK_SEED",
+      "type": "bytes",
+      "value": "[112, 101, 114, 115, 111, 110, 45, 98, 97, 110, 107]"
+    },
+    {
+      "name": "BONDING_CURVE_SEED",
+      "type": "bytes",
+      "value": "[98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101]"
+    },
+    {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
@@ -455,6 +586,41 @@ export const IDL: Metf = {
       ]
     },
     {
+      "name": "createBondingModel",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "model",
+          "type": "u64"
+        },
+        {
+          "name": "c",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "initPersonToken",
       "accounts": [
         {
@@ -485,6 +651,16 @@ export const IDL: Metf = {
         {
           "name": "feeBank",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -560,6 +736,21 @@ export const IDL: Metf = {
         },
         {
           "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
           "isMut": false,
           "isSigner": false
         },
@@ -666,6 +857,26 @@ export const IDL: Metf = {
   ],
   "accounts": [
     {
+      "name": "bondingCurve",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "model",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "c",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "config",
       "type": {
         "kind": "struct",
@@ -721,6 +932,18 @@ export const IDL: Metf = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "currentSupply",
+            "type": "u64"
+          },
+          {
+            "name": "initPrice",
+            "type": "u64"
+          },
+          {
+            "name": "bondingCurve",
+            "type": "publicKey"
           }
         ]
       }
@@ -747,6 +970,10 @@ export const IDL: Metf = {
           {
             "name": "decimals",
             "type": "u8"
+          },
+          {
+            "name": "initPrice",
+            "type": "u64"
           }
         ]
       }
@@ -762,6 +989,21 @@ export const IDL: Metf = {
       "code": 6001,
       "name": "AccountAlreadyInitialized",
       "msg": "Person account is already initialized"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidCValue",
+      "msg": "Invalid c value"
+    },
+    {
+      "code": 6003,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "Overflow"
     }
   ]
 };

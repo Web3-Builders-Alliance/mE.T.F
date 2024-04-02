@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    constants::{BOOL_SIZE, DISCRIMINATOR_SIZE, PUBKEY_SIZE, U8_SIZE},
+    constants::{BOOL_SIZE, DISCRIMINATOR_SIZE, PUBKEY_SIZE, U64_SIZE, U8_SIZE},
     error::MyError,
 };
 
@@ -11,6 +11,7 @@ pub struct InitPersonTokenParams {
     pub symbol: String,
     pub uri: String,
     pub decimals: u8,
+    pub init_price: u64,
 }
 
 #[account]
@@ -21,6 +22,9 @@ pub struct Person {
     pub transfer_hook: Pubkey, // The transfer hook that the person account is associated with
     pub vault: Pubkey,         // The associated token account that holds the person's tokens
     pub bump: u8,
+    pub current_supply: u64,
+    pub init_price: u64, // how many token per SOL
+    pub bonding_curve: Pubkey,
 }
 
 impl Space for Person {
@@ -30,7 +34,10 @@ impl Space for Person {
         + PUBKEY_SIZE
         + PUBKEY_SIZE
         + PUBKEY_SIZE
-        + U8_SIZE;
+        + U8_SIZE
+        + U64_SIZE
+        + U64_SIZE
+        + PUBKEY_SIZE;
 }
 
 impl Person {
@@ -40,6 +47,8 @@ impl Person {
         token_mint: Pubkey,
         transfer_hook: Pubkey,
         vault: Pubkey,
+        bonding_curve: Pubkey,
+        init_price: u64,
         bump: u8,
     ) -> Result<()> {
         require!(!self.is_initialized, MyError::AccountAlreadyInitialized);
@@ -49,6 +58,9 @@ impl Person {
         self.transfer_hook = transfer_hook;
         self.vault = vault;
         self.bump = bump;
+        self.bonding_curve = bonding_curve;
+        self.current_supply = 0;
+        self.init_price = init_price;
         Ok(())
     }
 }
