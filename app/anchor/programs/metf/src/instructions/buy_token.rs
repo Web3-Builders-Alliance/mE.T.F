@@ -1,5 +1,3 @@
-use std::ops::Div;
-
 use crate::{
     constants::{CONFIG_SEED, PERSON_BANK_SEED, PERSON_SEED},
     state::{BondingCurve, Config, Person},

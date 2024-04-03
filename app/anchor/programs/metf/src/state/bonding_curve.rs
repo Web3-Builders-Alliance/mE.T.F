@@ -1,5 +1,3 @@
-use std::ops::Mul;
-
 use anchor_lang::prelude::*;
 
 use crate::{
@@ -19,7 +17,12 @@ impl Space for BondingCurve {
 }
 
 impl BondingCurve {
-    pub fn calculate_price(&self, supply: u64) -> u64 {
-        supply
-    }
+    // pub fn calculate_purchase_return(
+    //     &self,
+    //     supply: u64,
+    //     poolBalance: u64,
+    //     amount: u64,
+    // ) -> Result<u64, MyError> {
+    //     Ok(amount * self.c)
+    // }
 }
