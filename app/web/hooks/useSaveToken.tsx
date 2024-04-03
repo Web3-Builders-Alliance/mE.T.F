@@ -14,6 +14,8 @@ const useSaveToken = () => {
           name: data.name,
           symbol: data.symbol,
           description: data.description,
+          photo: data.image,
+          model: data.model,
         },
         formData
       );

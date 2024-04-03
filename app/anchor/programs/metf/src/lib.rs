@@ -8,7 +8,7 @@ pub use instructions::*;
 
 pub use state::InitPersonTokenParams;
 
-declare_id!("4JtZDX2xfSon3tWVte3duevJyeqdYB887BACuxLb13XG");
+declare_id!("5jB9vrwJC28KUgZfBoQPhpnKq7deSMzCNeDvoPrAzNv6");
 
 #[program]
 pub mod metf {

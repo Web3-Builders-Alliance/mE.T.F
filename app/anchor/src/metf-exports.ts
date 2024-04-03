@@ -8,5 +8,5 @@ export { Metf, MetfIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
 export const programId = new PublicKey(
-  '7QkCWdYBgV3VowU8ifAyhVHkrmGXQJLm6NGXtncTnYuq'
+  '5jB9vrwJC28KUgZfBoQPhpnKq7deSMzCNeDvoPrAzNv6'
 );

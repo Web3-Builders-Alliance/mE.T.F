@@ -18,10 +18,7 @@ body {
   font-family: inherit !important;
 }
 
-
-
-
-html,
+/* html,
 body {
   --custom-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
@@ -53,11 +50,11 @@ body,
   height: 100vh;
   width: 100vw;
   overflow-x: hidden;
-}
+} */
 
 /* Grid */
 
-.container {
+/* .container {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
@@ -128,17 +125,17 @@ body,
 }
 .hidden-sm {
   display: none;
-}
+} */
 
-@media only screen and (min-width: 33.75em) {
-  /* 540px */
+/* @media only screen and (min-width: 33.75em) {
+
   .container {
     width: 80%;
   }
 }
 
 @media only screen and (min-width: 45em) {
-  /* 720px */
+
   .col-1 {
     width: 4.33%;
   }
@@ -178,17 +175,17 @@ body,
   .hidden-sm {
     display: block;
   }
-}
+} */
 
-@media only screen and (min-width: 60em) {
-  /* 960px */
+/* @media only screen and (min-width: 60em) {
+
   .container {
     width: 75%;
     max-width: 60rem;
   }
 }
 
-/* Forms */
+
 
 label {
   display: block;
@@ -212,7 +209,7 @@ input[disabled] {
   color: var(--custom-color-secondary);
 }
 
-/* Utils */
+
 
 .block {
   display: block;
@@ -255,11 +252,11 @@ input[disabled] {
 }
 .opacity-half {
   opacity: 50%;
-}
+} */
 
 /* Button */
 
-button,
+/* button,
 .button {
   color: var(--custom-color);
   border: var(--custom-border);
@@ -278,11 +275,11 @@ button.primary,
 .button.primary {
   background-color: var(--custom-color-brand);
   border: 1px solid var(--custom-color-brand);
-}
+} */
 
 /* Widgets */
 
-.card {
+/* .card {
   width: 100%;
   display: block;
   border: var(--custom-border);
@@ -332,9 +329,9 @@ button.primary,
   justify-content: left;
 }
 
-@media only screen and (min-width: 60em) {
-  /* 960px */
-  .footer > div:first-child {
+@media only screen and (min-width: 60em) { */
+/* 960px */
+/* .footer > div:first-child {
     display: flex;
   }
   .footer > div:nth-child(2) {
@@ -392,4 +389,4 @@ button.primary,
   width: 17px;
   animation: spin 1s linear infinite;
   filter: invert(1);
-}
+} */
