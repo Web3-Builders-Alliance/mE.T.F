@@ -5,7 +5,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useMetfProgram } from './metf-data-access';
-import { MetfCreate, MetfProgram } from './metf-ui';
+import { MetfProgram } from './metf-ui';
 
 export default function MetfFeature() {
   const { publicKey } = useWallet();
@@ -23,7 +23,6 @@ export default function MetfFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <MetfCreate />
       </AppHero>
       <MetfProgram />
     </div>

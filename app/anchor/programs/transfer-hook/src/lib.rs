@@ -9,7 +9,7 @@ use anchor_spl::{
 use spl_tlv_account_resolution::state::ExtraAccountMetaList;
 use spl_transfer_hook_interface::instruction::{ExecuteInstruction, TransferHookInstruction};
 
-declare_id!("2TJHnk4FMjMXDLYwS6MiSXBEEBGJtqXejnPZzoyGpZC6");
+declare_id!("3F3DAm6ub2FCNjaT8VXYLoZ9EHgKUfCRAa9rWYWWizVH");
 
 #[program]
 pub mod transfer_hook {
