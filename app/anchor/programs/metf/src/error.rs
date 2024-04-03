@@ -6,4 +6,10 @@ pub enum MyError {
     SomethingWentWrong,
     #[msg("Person account is already initialized")]
     AccountAlreadyInitialized,
+    #[msg("Invalid c value")]
+    InvalidCValue,
+    #[msg("Unauthorized")]
+    Unauthorized,
+    #[msg("Overflow")]
+    Overflow,
 }

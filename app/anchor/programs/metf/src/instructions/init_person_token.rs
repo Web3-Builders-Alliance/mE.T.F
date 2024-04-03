@@ -1,10 +1,13 @@
 use std::ops::Mul;
 
 use crate::{
-    constants::{CONFIG_SEED, PERSON_SEED, TOKEN_LIMIT_AMOUNT},
-    state::{Config, InitPersonTokenParams, Person},
+    constants::{CONFIG_SEED, FEE_BANK_SEED, PERSON_BANK_SEED, PERSON_SEED, TOKEN_LIMIT_AMOUNT},
+    state::{BondingCurve, Config, InitPersonTokenParams, Person},
 };
-use anchor_lang::{prelude::*, system_program::create_account};
+use anchor_lang::{
+    prelude::*,
+    system_program::{create_account, transfer, Transfer},
+};
 use anchor_lang::{solana_program::sysvar::rent::ID as RENT_ID, system_program::CreateAccount};
 use anchor_spl::{
     associated_token::{create, AssociatedToken, Create},
@@ -59,6 +62,25 @@ pub struct InitPersonToken<'info> {
         bump
       )]
     pub config: Account<'info, Config>,
+    #[account(
+        mut,
+        seeds = [
+            FEE_BANK_SEED.as_ref(),
+        ],
+        bump,
+        address = config.fee_bank
+    )]
+    pub fee_bank: SystemAccount<'info>,
+    #[account(
+        mut,
+        seeds = [
+            PERSON_BANK_SEED.as_ref(),
+            mint.key().as_ref()
+        ],
+        bump,
+    )]
+    pub person_bank: SystemAccount<'info>,
+    pub bond_curve: Account<'info, BondingCurve>,
     pub token_2022_program: Program<'info, Token2022>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -184,6 +206,26 @@ impl<'info> InitPersonToken<'info> {
         self.mint_to_vault()?;
 
         self.remove_mint_authority()?;
+
+        self.collec_fee()?;
+
+        // self.init_token_price()?;
+
+        Ok(())
+    }
+
+    fn init_token_price(&mut self) -> Result<()> {
+        self.person.current_supply = self.person.current_supply.checked_add(1u64).unwrap();
+        transfer(
+            CpiContext::new(
+                self.system_program.to_account_info(),
+                Transfer {
+                    from: self.signer.to_account_info(),
+                    to: self.person_bank.to_account_info(),
+                },
+            ),
+            self.person.init_price,
+        )?;
         Ok(())
     }
 
@@ -231,12 +273,29 @@ impl<'info> InitPersonToken<'info> {
         )
     }
 
-    pub fn initialize(&mut self, bumps: &InitPersonTokenBumps) -> Result<()> {
+    pub fn collec_fee(&mut self) -> Result<()> {
+        transfer(
+            CpiContext::new(
+                self.system_program.to_account_info(),
+                Transfer {
+                    from: self.signer.to_account_info(),
+                    to: self.fee_bank.to_account_info(),
+                },
+            ),
+            self.config.fee,
+        )?;
+
+        Ok(())
+    }
+
+    pub fn initialize(&mut self, init_price: u64, bumps: &InitPersonTokenBumps) -> Result<()> {
         self.person.init(
             *self.signer.to_account_info().key,
             *self.mint.to_account_info().key,
             self.config.transfer_hook,
             *self.vault.to_account_info().key,
+            *self.bond_curve.to_account_info().key,
+            init_price,
             bumps.person,
         )?;
         Ok(())

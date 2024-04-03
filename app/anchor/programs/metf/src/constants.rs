@@ -17,4 +17,10 @@ pub const PERSON_TOKEN_VAULT_SEED: &'static [u8] = b"vault";
 #[constant]
 pub const EXTRA_ACCOUNT_META_SEED: &'static [u8] = b"extra-account-metas";
 #[constant]
+pub const FEE_BANK_SEED: &'static [u8] = b"fee-bank";
+#[constant]
+pub const PERSON_BANK_SEED: &'static [u8] = b"person-bank";
+#[constant]
+pub const BONDING_CURVE_SEED: &'static [u8] = b"bonding-curve";
+#[constant]
 pub const TOKEN_LIMIT_AMOUNT: u64 = 1_000_000_000;

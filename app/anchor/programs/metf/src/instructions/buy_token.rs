@@ -1,4 +1,9 @@
-use crate::{constants::PERSON_SEED, state::Person};
+use std::ops::Div;
+
+use crate::{
+    constants::{CONFIG_SEED, PERSON_BANK_SEED, PERSON_SEED},
+    state::{BondingCurve, Config, Person},
+};
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::sysvar::rent::ID as RENT_ID;
 use anchor_spl::{
@@ -56,6 +61,23 @@ pub struct BuyToken<'info> {
     pub extra_account_meta_list: UncheckedAccount<'info>,
     /// CHECK: this is fine
     pub owner_without_fee: AccountInfo<'info>,
+    #[account(
+        seeds = [CONFIG_SEED.as_ref()],
+        bump
+      )]
+    pub config: Account<'info, Config>,
+    #[account(
+        address = person.bonding_curve
+    )]
+    pub bond_curve: Account<'info, BondingCurve>,
+    #[account(
+        seeds = [
+            PERSON_BANK_SEED.as_ref(),
+            mint.key().as_ref()
+        ],
+        bump,
+    )]
+    pub person_bank: SystemAccount<'info>,
     pub token_2022_program: Program<'info, Token2022>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -81,6 +103,8 @@ impl<'info> BuyToken<'info> {
             ))?;
         }
 
+        self.person.current_supply = self.person.current_supply.checked_add(amount).unwrap();
+
         let seeds = &[
             PERSON_SEED.as_ref(),
             self.person.user.as_ref(),
@@ -103,6 +127,7 @@ impl<'info> BuyToken<'info> {
             self.mint.decimals,
             signer_seeds,
         )?;
+
         Ok(())
     }
 }

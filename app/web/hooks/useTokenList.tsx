@@ -4,6 +4,9 @@ const useTokenList = () => {
   return useQuery({
     queryKey: ['tokenList'],
     queryFn: async () => {
+      // delay for 1 second to simulate network request
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       return [
         {
           mint: 'FyD6fWSb4nCfAisi2BRuUeDaCG5aKL7oniq2FbePULqr',
