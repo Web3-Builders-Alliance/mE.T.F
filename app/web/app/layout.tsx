@@ -6,7 +6,7 @@ import { ReactQueryProvider } from './react-query-provider';
 
 export const metadata = {
   title: 'mE.T.F',
-  description: 'Trading fun for fans Passive income for u',
+  description: 'Trading fun for fans, passive income for you',
 };
 
 const links: { label: string; path: string }[] = [
