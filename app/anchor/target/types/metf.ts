@@ -365,7 +365,7 @@ export type Metf = {
             "type": "u8"
           },
           {
-            "name": "c",
+            "name": "reserveRatio",
             "type": "u64"
           }
         ]
@@ -870,7 +870,7 @@ export const IDL: Metf = {
             "type": "u8"
           },
           {
-            "name": "c",
+            "name": "reserveRatio",
             "type": "u64"
           }
         ]

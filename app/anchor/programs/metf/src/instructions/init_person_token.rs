@@ -44,7 +44,7 @@ pub struct InitPersonToken<'info> {
         seeds = [PERSON_SEED.as_ref(), signer.key().as_ref()],
         bump
     )]
-    pub person: Account<'info, Person>,
+    pub person: Box<Account<'info, Person>>,
     #[account(
         mut,
         seeds = [
@@ -61,7 +61,7 @@ pub struct InitPersonToken<'info> {
         seeds = [CONFIG_SEED.as_ref()],
         bump
       )]
-    pub config: Account<'info, Config>,
+    pub config: Box<Account<'info, Config>>,
     #[account(
         mut,
         seeds = [
@@ -80,7 +80,7 @@ pub struct InitPersonToken<'info> {
         bump,
     )]
     pub person_bank: SystemAccount<'info>,
-    pub bond_curve: Account<'info, BondingCurve>,
+    pub bond_curve: Box<Account<'info, BondingCurve>>,
     pub token_2022_program: Program<'info, Token2022>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -214,7 +214,7 @@ impl<'info> InitPersonToken<'info> {
         Ok(())
     }
 
-    fn init_token_price(&mut self) -> Result<()> {
+    fn _init_token_price(&mut self) -> Result<()> {
         self.person.current_supply = self.person.current_supply.checked_add(1u64).unwrap();
         transfer(
             CpiContext::new(

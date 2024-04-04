@@ -35,7 +35,7 @@ impl<'info> CreateBondingModel<'info> {
         require!(c > 0, MyError::InvalidCValue);
         require!(self.config.admin == *self.signer.key, MyError::Unauthorized);
         self.bonding_curve.model = model;
-        self.bonding_curve.c = c;
+        self.bonding_curve.reserve_ratio = c;
         self.bonding_curve.bump = bumps.bonding_curve;
         Ok(())
     }
