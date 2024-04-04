@@ -365,7 +365,7 @@
             "type": "u8"
           },
           {
-            "name": "c",
+            "name": "reserveRatio",
             "type": "u64"
           }
         ]

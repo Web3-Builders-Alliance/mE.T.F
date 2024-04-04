@@ -125,7 +125,14 @@ impl<'info> BuyToken<'info> {
             self.mint.decimals,
             signer_seeds,
         )?;
+        let pool_balance = self.person_bank.lamports();
 
+        let token = self.bond_curve.calculate_purchase_return(
+            self.person.current_supply,
+            pool_balance,
+            amount,
+        );
+        msg!("Token bought successfully! Token amount: {:?}", token?);
         Ok(())
     }
 }

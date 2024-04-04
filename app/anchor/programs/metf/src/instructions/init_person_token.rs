@@ -214,7 +214,7 @@ impl<'info> InitPersonToken<'info> {
         Ok(())
     }
 
-    fn init_token_price(&mut self) -> Result<()> {
+    fn _init_token_price(&mut self) -> Result<()> {
         self.person.current_supply = self.person.current_supply.checked_add(1u64).unwrap();
         transfer(
             CpiContext::new(
