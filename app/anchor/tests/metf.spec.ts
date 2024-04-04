@@ -127,7 +127,7 @@ describe('metf', () => {
     symbol: 'LEOT',
     decimals: 9,
     uri: 'https://5vfxc4tr6xoy23qefqbj4qx2adzkzapneebanhcalf7myvn5gzja.arweave.net/7UtxcnH13Y1uBCwCnkL6APKsge0hAgacQFl-zFW9NlI',
-    initPrice: new anchor.BN(10 * 10 ** 6),
+    initPrice: new anchor.BN(50000),
   };
   const mint = anchor.web3.Keypair.generate();
 
@@ -185,7 +185,11 @@ describe('metf', () => {
 
   it('Should create a bonding curve model', async () => {
     const tx = await program.methods
-      .createBondingModel(bondingCurveId, new anchor.BN(333333))
+      .createBondingModel(
+        bondingCurveId,
+        new anchor.BN(3000),
+        new anchor.BN(1000000)
+      )
       .accounts({
         config: configPda,
         signer: admin.publicKey,
@@ -317,7 +321,7 @@ describe('metf', () => {
     log(tx);
 
     const tx2 = await program.methods
-      .buyToken(new anchor.BN(20 * 10 ** 9))
+      .buyToken(new anchor.BN(2 * 10 ** 9))
       .accounts({
         signer: buyer.publicKey,
         person: personPda,

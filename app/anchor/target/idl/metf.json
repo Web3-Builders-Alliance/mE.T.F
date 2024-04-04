@@ -41,6 +41,11 @@
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
+    },
+    {
+      "name": "DEFAULT_TOKEN_DECIMALS",
+      "type": "u8",
+      "value": "9"
     }
   ],
   "instructions": [
@@ -110,7 +115,11 @@
           "type": "u64"
         },
         {
-          "name": "c",
+          "name": "reserveRatio",
+          "type": "u16"
+        },
+        {
+          "name": "weight",
           "type": "u64"
         }
       ]
@@ -246,7 +255,7 @@
         },
         {
           "name": "personBank",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -366,6 +375,10 @@
           },
           {
             "name": "reserveRatio",
+            "type": "u16"
+          },
+          {
+            "name": "weight",
             "type": "u64"
           }
         ]
@@ -439,6 +452,10 @@
           {
             "name": "bondingCurve",
             "type": "publicKey"
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
           }
         ]
       }
@@ -502,6 +519,6 @@
     }
   ],
   "metadata": {
-    "address": "9kmBtt59Gs78A67mSzd3ddcEKJYUfetTwnN6MzFWEgSw"
+    "address": "5jB9vrwJC28KUgZfBoQPhpnKq7deSMzCNeDvoPrAzNv6"
   }
 }

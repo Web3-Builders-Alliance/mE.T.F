@@ -25,6 +25,7 @@ pub struct Person {
     pub current_supply: u64,
     pub init_price: u64, // how many token per SOL
     pub bonding_curve: Pubkey,
+    pub reserves: u64,
 }
 
 impl Space for Person {
@@ -37,7 +38,8 @@ impl Space for Person {
         + U8_SIZE
         + U64_SIZE
         + U64_SIZE
-        + PUBKEY_SIZE;
+        + PUBKEY_SIZE
+        + U64_SIZE;
 }
 
 impl Person {
@@ -61,6 +63,7 @@ impl Person {
         self.bonding_curve = bonding_curve;
         self.current_supply = 0;
         self.init_price = init_price;
+        self.reserves = 0;
         Ok(())
     }
 }

@@ -23,9 +23,11 @@ pub mod metf {
     pub fn create_bonding_model(
         ctx: Context<CreateBondingModel>,
         model: u64,
-        c: u64,
+        reserve_ratio: u16,
+        weight: u64,
     ) -> Result<()> {
-        ctx.accounts.handler(model, c, &ctx.bumps)
+        ctx.accounts
+            .handler(model, reserve_ratio, weight, &ctx.bumps)
     }
 
     pub fn init_person_token(

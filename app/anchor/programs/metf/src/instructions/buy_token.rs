@@ -1,9 +1,12 @@
 use crate::{
-    constants::{CONFIG_SEED, PERSON_BANK_SEED, PERSON_SEED},
+    constants::{CONFIG_SEED, DEFAULT_TOKEN_DECIMALS, PERSON_BANK_SEED, PERSON_SEED},
     state::{BondingCurve, Config, Person},
 };
-use anchor_lang::prelude::*;
 use anchor_lang::solana_program::sysvar::rent::ID as RENT_ID;
+use anchor_lang::{
+    prelude::*,
+    system_program::{transfer, Transfer},
+};
 use anchor_spl::{
     associated_token::{create, AssociatedToken, Create},
     token_2022::{spl_token_2022::onchain::invoke_transfer_checked, Token2022},
@@ -69,6 +72,7 @@ pub struct BuyToken<'info> {
     )]
     pub bond_curve: Account<'info, BondingCurve>,
     #[account(
+        mut,
         seeds = [
             PERSON_BANK_SEED.as_ref(),
             mint.key().as_ref()
@@ -101,8 +105,63 @@ impl<'info> BuyToken<'info> {
             ))?;
         }
 
-        self.person.current_supply = self.person.current_supply.checked_add(amount).unwrap();
+        let pool_balance = self.person_bank.lamports();
+        let current_supply = self.person.current_supply;
 
+        if current_supply == 0 {
+            let token_return = amount
+                .checked_div(self.person.init_price)
+                .unwrap()
+                .checked_mul(10u64.pow(DEFAULT_TOKEN_DECIMALS.into()))
+                .unwrap();
+
+            self.tranfer_token(token_return)?;
+            self.tranfer_currency(amount)?;
+
+            self.person.reserves = token_return
+                .checked_mul(self.bond_curve.reserve_ratio.into())
+                .unwrap()
+                .checked_div(10000)
+                .unwrap()
+        } else {
+            self.buy_token_with_curve(amount, pool_balance)?;
+        }
+
+        self.person.current_supply = self.person.current_supply.checked_add(amount).unwrap();
+        Ok(())
+    }
+
+    fn buy_token_with_curve(&mut self, amount: u64, pool_balance: u64) -> Result<()> {
+        let token = self
+            .bond_curve
+            .calculate_purchase_return(self.person.current_supply, pool_balance, amount)
+            .unwrap();
+
+        self.tranfer_token(token)?;
+        self.tranfer_currency(amount)?;
+
+        self.person.reserves = self
+            .bond_curve
+            .calculate_purchase_price(self.person.current_supply, pool_balance, amount)
+            .unwrap();
+        Ok(())
+    }
+
+    fn tranfer_currency(&self, amount: u64) -> Result<()> {
+        transfer(
+            CpiContext::new(
+                self.system_program.to_account_info(),
+                Transfer {
+                    from: self.signer.to_account_info(),
+                    to: self.person_bank.to_account_info(),
+                },
+            ),
+            amount,
+        )?;
+        Ok(())
+    }
+
+    fn tranfer_token(&self, amount: u64) -> Result<()> {
         let seeds = &[
             PERSON_SEED.as_ref(),
             self.person.user.as_ref(),
@@ -125,14 +184,6 @@ impl<'info> BuyToken<'info> {
             self.mint.decimals,
             signer_seeds,
         )?;
-        let pool_balance = self.person_bank.lamports();
-
-        let token = self.bond_curve.calculate_purchase_return(
-            self.person.current_supply,
-            pool_balance,
-            amount,
-        );
-        msg!("Token bought successfully! Token amount: {:?}", token?);
         Ok(())
     }
 }
