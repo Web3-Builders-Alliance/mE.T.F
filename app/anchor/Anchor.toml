@@ -19,7 +19,7 @@ wallet = "~/.config/solana/id.json"
 test = "../node_modules/.bin/nx run anchor:jest --skip-nx-cache"
 
 [test]
-startup_wait = 5000
+startup_wait = 10000
 shutdown_wait = 2000
 upgradeable = false
 

@@ -185,7 +185,7 @@ describe('metf', () => {
 
   it('Should create a bonding curve model', async () => {
     const tx = await program.methods
-      .createBondingModel(bondingCurveId, new anchor.BN(100))
+      .createBondingModel(bondingCurveId, new anchor.BN(333333))
       .accounts({
         config: configPda,
         signer: admin.publicKey,
@@ -294,7 +294,7 @@ describe('metf', () => {
     // );
 
     const tx = await program.methods
-      .buyToken(new anchor.BN(10 * 10 ** 9))
+      .buyToken(new anchor.BN(1 * 10 ** 9))
       .accounts({
         signer: buyer.publicKey,
         person: personPda,
