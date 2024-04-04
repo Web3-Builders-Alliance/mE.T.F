@@ -294,7 +294,7 @@ describe('metf', () => {
     // );
 
     const tx = await program.methods
-      .buyToken(new anchor.BN(1000000 * 10 ** 6))
+      .buyToken(new anchor.BN(10 * 10 ** 9))
       .accounts({
         signer: buyer.publicKey,
         person: personPda,
@@ -315,6 +315,29 @@ describe('metf', () => {
       // .instruction();
       .rpc();
     log(tx);
+
+    const tx2 = await program.methods
+      .buyToken(new anchor.BN(20 * 10 ** 9))
+      .accounts({
+        signer: buyer.publicKey,
+        person: personPda,
+        mint: mint.publicKey,
+        vault,
+        userAta: buyer_ata,
+        extraAccountMetaList: extraAccountMetaListPDA,
+        ownerWithoutFee: program.programId,
+        config: configPda,
+        bondCurve: bondingCurve1Pda,
+        personBank: personBankPda,
+        transferHook: transferHookProgram.programId,
+        token2022Program: TOKEN_2022_PROGRAM_ID,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      })
+      .signers([buyer])
+      // .instruction();
+      .rpc();
+    log(tx2);
     // const transaction = new Transaction().add(createAccountIx).add(tx);
     // await sendAndConfirmTransaction(connection, transaction, [buyer], {
     //   skipPreflight: true,
