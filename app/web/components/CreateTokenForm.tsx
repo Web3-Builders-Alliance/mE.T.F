@@ -12,7 +12,10 @@ import { Model } from '@/lib/enum';
 const schema = yup.object().shape({
   name: yup.string().max(50).required('Name is required'),
   symbol: yup.string().max(6).required('Symbol is required'),
-  model: yup.string().required('Model is required'),
+  model: yup
+    .string()
+    .required('Model is required')
+    .default(Model.StabilityModel),
   description: yup.string().max(200),
   photo: yup.string().url().required('Photo is required'),
   // image: yup
@@ -32,45 +35,48 @@ const models = [
     name: 'Stability Model',
     description:
       'Ensures a stable system with token value increasing gradually over time, while maintaining appeal for long-term token holders',
+    enable: true,
   },
   {
     id: Model.LiquidityBoostModel,
     name: 'Liquidity Boost Model',
     description:
       'Designed to increase token liquidity, fostering a flexible trading environment and encouraging user participation to bolster token liquidity.',
+    enable: false,
   },
   {
     id: Model.SecurityFocusModel,
     name: 'Security Focus Model',
     description:
       'Aims to create a token with low liquidity and reduced susceptibility to attacks by employing a low-curvature bonding curve.',
+    enable: false,
   },
   {
     id: Model.AccelerationModel,
     name: 'Acceleration Model',
     description:
       'Promotes rapid growth and encourages frequent trading by utilizing a high-curvature bonding curve, stimulating user engagement and trading activity.',
+    enable: false,
   },
 ];
 
 const CreateTokenForm = () => {
-  const inputRef = useRef<HTMLInputElement | null>();
   const userInfo = useUserInfo();
-  const [image, setImage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      model: 'StabilityModel',
+      model: Model.StabilityModel,
       name: userInfo.name,
       symbol: '',
       photo: userInfo.photo,
     },
   });
+  console.log(watch('model'));
   const saveToken = useSaveToken();
   const onSubmit = async (data: any) => {
     try {
@@ -81,12 +87,6 @@ const CreateTokenForm = () => {
           <div className="text-lg">Token creation failed</div>
         </div>
       );
-    }
-  };
-
-  const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(URL.createObjectURL(event.target.files[0]));
     }
   };
 
@@ -183,13 +183,14 @@ const CreateTokenForm = () => {
               <div key={model.id} className="relative flex items-start">
                 <div className="flex h-6 items-center">
                   <input
-                    {...register('model')}
                     id={model.id}
                     aria-describedby={`${model.id}-description`}
-                    name="model"
+                    value={model.id}
                     type="radio"
                     defaultChecked={model.id === Model.StabilityModel}
                     className="h-4 w-4 border-gray-300  radio radio-warning"
+                    disabled={!model.enable}
+                    {...register('model')}
                   />
                 </div>
                 <div className="ml-3 text-sm leading-6">

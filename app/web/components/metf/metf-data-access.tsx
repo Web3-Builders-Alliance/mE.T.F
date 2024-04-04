@@ -72,7 +72,10 @@ export function useMetfProgram() {
     onSuccess: (signature) => {
       transactionToast(signature);
     },
-    onError: () => toast.error('Failed to run program'),
+    onError: (e) => {
+      console.error(e);
+      toast.error('Failed to run program');
+    },
   });
 
   const createBondcurve = useMutation({
@@ -105,10 +108,7 @@ export function useMetfProgram() {
       const _mint = Keypair.generate();
 
       const [personPda] = PublicKey.findProgramAddressSync(
-        [
-          Buffer.from(PERSON_SEED),
-          new PublicKey(provider.publicKey).toBuffer(),
-        ],
+        [Buffer.from(PERSON_SEED), provider.publicKey.toBuffer()],
         program.programId
       );
 
@@ -122,8 +122,15 @@ export function useMetfProgram() {
         [Buffer.from('person-bank'), _mint.publicKey.toBuffer()],
         program.programId
       );
+
       return program.methods
-        .initPersonToken({ name, symbol, decimals, uri, initPrice })
+        .initPersonToken({
+          name,
+          symbol,
+          uri,
+          decimals,
+          initPrice,
+        })
         .accounts({
           signer: provider.publicKey,
           person: personPda,

@@ -1,11 +1,7 @@
-import savePersonToken from '@/actions/savePersonToken';
 import { useMetfProgram } from '@/components/metf/metf-data-access';
-import { useTransactionToast } from '@/components/ui/ui-layout';
-import { BN } from '@coral-xyz/anchor';
 import { useMutation } from '@tanstack/react-query';
 
 const useSaveToken = () => {
-  const transactionToast = useTransactionToast();
   const { createPersonToken } = useMetfProgram();
   return useMutation({
     mutationKey: ['saveToken'],
@@ -25,7 +21,7 @@ const useSaveToken = () => {
       const result = await createPersonToken.mutate({
         name: data.name,
         symbol: data.symbol,
-        uri: data.image,
+        uri: data.photo,
       });
       return result;
     },
