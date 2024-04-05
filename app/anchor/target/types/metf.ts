@@ -41,6 +41,11 @@ export type Metf = {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
+    },
+    {
+      "name": "DEFAULT_TOKEN_DECIMALS",
+      "type": "u8",
+      "value": "9"
     }
   ],
   "instructions": [
@@ -110,7 +115,11 @@ export type Metf = {
           "type": "u64"
         },
         {
-          "name": "c",
+          "name": "reserveRatio",
+          "type": "u16"
+        },
+        {
+          "name": "weight",
           "type": "u64"
         }
       ]
@@ -246,7 +255,96 @@ export type Metf = {
         },
         {
           "name": "personBank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sellToken",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "person",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "extraAccountMetaList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -366,6 +464,10 @@ export type Metf = {
           },
           {
             "name": "reserveRatio",
+            "type": "u16"
+          },
+          {
+            "name": "weight",
             "type": "u64"
           }
         ]
@@ -439,6 +541,10 @@ export type Metf = {
           {
             "name": "bondingCurve",
             "type": "publicKey"
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
           }
         ]
       }
@@ -546,6 +652,11 @@ export const IDL: Metf = {
       "name": "TOKEN_LIMIT_AMOUNT",
       "type": "u64",
       "value": "1_000_000_000"
+    },
+    {
+      "name": "DEFAULT_TOKEN_DECIMALS",
+      "type": "u8",
+      "value": "9"
     }
   ],
   "instructions": [
@@ -615,7 +726,11 @@ export const IDL: Metf = {
           "type": "u64"
         },
         {
-          "name": "c",
+          "name": "reserveRatio",
+          "type": "u16"
+        },
+        {
+          "name": "weight",
           "type": "u64"
         }
       ]
@@ -751,7 +866,96 @@ export const IDL: Metf = {
         },
         {
           "name": "personBank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "sellToken",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "person",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "CHECK"
+          ]
+        },
+        {
+          "name": "transferHook",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "extraAccountMetaList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ownerWithoutFee",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bondCurve",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "personBank",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -871,6 +1075,10 @@ export const IDL: Metf = {
           },
           {
             "name": "reserveRatio",
+            "type": "u16"
+          },
+          {
+            "name": "weight",
             "type": "u64"
           }
         ]
@@ -944,6 +1152,10 @@ export const IDL: Metf = {
           {
             "name": "bondingCurve",
             "type": "publicKey"
+          },
+          {
+            "name": "reserves",
+            "type": "u64"
           }
         ]
       }

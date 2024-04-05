@@ -31,11 +31,18 @@ pub struct CreateBondingModel<'info> {
 }
 
 impl<'info> CreateBondingModel<'info> {
-    pub fn handler(&mut self, model: u64, c: u64, bumps: &CreateBondingModelBumps) -> Result<()> {
-        require!(c > 0, MyError::InvalidCValue);
+    pub fn handler(
+        &mut self,
+        model: u64,
+        reserve_ratio: u16,
+        weight: u64,
+        bumps: &CreateBondingModelBumps,
+    ) -> Result<()> {
+        require!(reserve_ratio > 0, MyError::InvalidCValue);
         require!(self.config.admin == *self.signer.key, MyError::Unauthorized);
         self.bonding_curve.model = model;
-        self.bonding_curve.reserve_ratio = c;
+        self.bonding_curve.reserve_ratio = reserve_ratio;
+        self.bonding_curve.weight = weight;
         self.bonding_curve.bump = bumps.bonding_curve;
         Ok(())
     }

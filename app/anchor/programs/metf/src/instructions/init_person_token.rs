@@ -1,7 +1,10 @@
 use std::ops::Mul;
 
 use crate::{
-    constants::{CONFIG_SEED, FEE_BANK_SEED, PERSON_BANK_SEED, PERSON_SEED, TOKEN_LIMIT_AMOUNT},
+    constants::{
+        CONFIG_SEED, DEFAULT_TOKEN_DECIMALS, FEE_BANK_SEED, PERSON_BANK_SEED, PERSON_SEED,
+        TOKEN_LIMIT_AMOUNT,
+    },
     state::{BondingCurve, Config, InitPersonTokenParams, Person},
 };
 use anchor_lang::{
@@ -171,7 +174,7 @@ impl<'info> InitPersonToken<'info> {
                     mint: self.mint.to_account_info(),
                 },
             ),
-            6,
+            DEFAULT_TOKEN_DECIMALS,
             &self.signer.to_account_info().key(),
             None,
         )?;
@@ -215,17 +218,20 @@ impl<'info> InitPersonToken<'info> {
     }
 
     fn _init_token_price(&mut self) -> Result<()> {
-        self.person.current_supply = self.person.current_supply.checked_add(1u64).unwrap();
-        transfer(
-            CpiContext::new(
-                self.system_program.to_account_info(),
-                Transfer {
-                    from: self.signer.to_account_info(),
-                    to: self.person_bank.to_account_info(),
-                },
-            ),
-            self.person.init_price,
-        )?;
+        // let rent = Rent::get()?;
+        // let rent_lamports = self.rent.get_lamports();
+        // create_account(
+        //     CpiContext::new(
+        //         self.system_program.to_account_info(),
+        //         CreateAccount {
+        //             from: self.signer.to_account_info(),
+        //             to: self.person_bank.to_account_info(),
+        //         },
+        //     ),
+        //     rent_lamports,
+        //     self.person_bank.try_account_data_len()?,
+        //     &spl_token_2022::id(),
+        // );
         Ok(())
     }
 
@@ -253,7 +259,7 @@ impl<'info> InitPersonToken<'info> {
                     authority: self.signer.to_account_info(),
                 },
             ),
-            TOKEN_LIMIT_AMOUNT.mul(10u64.pow(9)),
+            TOKEN_LIMIT_AMOUNT.mul(10u64.pow(DEFAULT_TOKEN_DECIMALS as u32)),
         )?;
 
         Ok(())
