@@ -117,33 +117,42 @@ impl<'info> BuyToken<'info> {
 
             self.tranfer_token(token_return)?;
             self.tranfer_currency(amount)?;
-
+            self.person.current_supply = current_supply.checked_add(token_return).unwrap();
             self.person.reserves = token_return
                 .checked_mul(self.bond_curve.reserve_ratio.into())
                 .unwrap()
                 .checked_div(10000)
                 .unwrap()
         } else {
-            self.buy_token_with_curve(amount, pool_balance)?;
+            self.buy_token_with_curve(amount, current_supply, pool_balance)?;
         }
 
-        self.person.current_supply = self.person.current_supply.checked_add(amount).unwrap();
         Ok(())
     }
 
-    fn buy_token_with_curve(&mut self, amount: u64, pool_balance: u64) -> Result<()> {
+    fn buy_token_with_curve(
+        &mut self,
+        amount: u64,
+        current_supply: u64,
+        pool_balance: u64,
+    ) -> Result<()> {
         let token = self
             .bond_curve
-            .calculate_purchase_return(self.person.current_supply, pool_balance, amount)
+            .calculate_purchase_return(current_supply, self.person.reserves, pool_balance, amount)
             .unwrap();
+
+        msg!("token: {}", token);
 
         self.tranfer_token(token)?;
         self.tranfer_currency(amount)?;
 
-        self.person.reserves = self
-            .bond_curve
-            .calculate_purchase_price(self.person.current_supply, pool_balance, amount)
-            .unwrap();
+        self.person.current_supply = current_supply.checked_add(token).unwrap();
+        let current_reserves = self.person.reserves;
+
+        self.person.reserves =
+            (current_reserves as f64 * (1.0 - self.bond_curve.reserve_ratio as f64 / 10000.0)
+                + token as f64 * self.bond_curve.reserve_ratio as f64 / 10000.0) as u64;
+
         Ok(())
     }
 
