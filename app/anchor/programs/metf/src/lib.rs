@@ -42,6 +42,10 @@ pub mod metf {
         ctx.accounts.buy_token(amount)
     }
 
+    pub fn sell_token(ctx: Context<SellToken>, amount: u64) -> Result<()> {
+        ctx.accounts.sell_token(amount)
+    }
+
     pub fn transfer_hook(ctx: Context<TransferHook>, amount: u64) -> Result<()> {
         ctx.accounts.handler(amount)
     }
