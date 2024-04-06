@@ -82,7 +82,7 @@ export function useMetfProgram() {
     mutationKey: ['metf', 'createBondingModel', { cluster }],
     mutationFn: () => {
       return program.methods
-        .createBondingModel(bondingCurveId, new BN(100))
+        .createBondingModel(bondingCurveId, 1, new BN(100)) // TODO: remove 1, Lostin added to get Vercel to deploy
         .accounts({
           config: configPda,
           signer: provider.publicKey,
