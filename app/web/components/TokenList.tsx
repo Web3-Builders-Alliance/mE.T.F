@@ -23,13 +23,15 @@ const TokenList = () => {
           <Link href={`/mint/${token.mint}`} key={token.mint}>
             <div className="bg-base-100 hover:shadow-xl transition-shadow duration-300 max-h-[10rem] overflow-hidden h-fit p-2 flex border border-transparent gap-2 w-full ">
               <figure className="min-w-[8rem]">
-                <Image
-                  src={token.image!}
-                  alt={token.name}
-                  width={96}
-                  height={96}
-                  className="w-32 h-32"
-                />
+                {token.image ? (
+                  <Image
+                    src={token.image}
+                    alt={token.name}
+                    width={96}
+                    height={96}
+                    className="w-32 h-32"
+                  />
+                ) : null}
               </figure>
               <div className="gap-1 grid h-fit">
                 <h4 className="text-sm">
@@ -38,6 +40,10 @@ const TokenList = () => {
                     {token.author.slice(0, 10)}
                   </span>
                 </h4>
+                <div className="text-sm">
+                  Name:{' '}
+                  <span className="text-secondary font-bold">{token.name}</span>
+                </div>
                 <div className="text-sm">
                   Symbol:{' '}
                   <span className="text-accent font-bold uppercase">
