@@ -29,7 +29,7 @@ const TokenList: React.FC<Props> = ({ keyword }) => {
             token.name.toLowerCase().includes(keyword?.toLowerCase() || '')
           )
           ?.map((token) => (
-            <Link href={`/mint/${token.mint}`} key={token.mint}>
+            <Link href={`/token/${token.pda}`} key={token.mint}>
               <div className="bg-base-100 hover:shadow-xl transition-shadow duration-300 max-h-[10rem] overflow-hidden h-fit p-2 flex border border-transparent gap-2 w-full ">
                 <figure className="min-w-[8rem]">
                   {token.image ? (
