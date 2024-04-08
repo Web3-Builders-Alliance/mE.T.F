@@ -10,7 +10,11 @@ import {
   SYSVAR_RENT_PUBKEY,
   SystemProgram,
 } from '@solana/web3.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  QueryFunctionContext,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
@@ -232,6 +236,7 @@ export function useMetfProgram() {
       toast.error('Failed to run program');
     },
   });
+
   return {
     program,
     programId,

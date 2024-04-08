@@ -1,3 +1,8 @@
+'use client';
+
+import { useMetfProgram } from '@/components/metf/metf-data-access';
+import usePersonTokenAccount from '@/hooks/usePersonTokenAccount';
+
 type Props = {
   params: {
     pubkey: string;
@@ -5,6 +10,8 @@ type Props = {
 };
 
 const MintPage: React.FC<Props> = ({ params: { pubkey } }) => {
+  const { data } = usePersonTokenAccount(pubkey);
+  console.log(data);
   return (
     <div>
       <h1>Mint: {pubkey}</h1>
