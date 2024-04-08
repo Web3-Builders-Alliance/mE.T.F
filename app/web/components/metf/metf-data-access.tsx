@@ -31,7 +31,6 @@ export function useMetfProgram() {
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const program = new Program(MetfIDL, programId, provider);
-  const {} = useWallet();
 
   const getProgramAccount = useQuery({
     queryKey: ['get-program-account', { cluster }],
