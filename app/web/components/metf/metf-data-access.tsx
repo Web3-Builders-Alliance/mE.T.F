@@ -100,11 +100,15 @@ export function useMetfProgram() {
 
   const createPersonToken = useMutation({
     mutationKey: ['metf', 'initPersonToken', { cluster }],
-    mutationFn: (params: { name: string; symbol: string; uri: string }) => {
-      const { name, symbol, uri } = params;
-      const decimals = 6;
-      const initPrice = new BN(10 ** decimals);
-      const _mint = Keypair.generate();
+    mutationFn: (params: {
+      _mint: Keypair;
+      name: string;
+      symbol: string;
+      uri: string;
+    }) => {
+      const { name, symbol, uri, _mint } = params;
+      const decimals = 9;
+      const initPrice = new BN(50000);
 
       const [personPda] = PublicKey.findProgramAddressSync(
         [Buffer.from(PERSON_SEED), provider.publicKey.toBuffer()],

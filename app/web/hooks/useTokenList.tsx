@@ -23,7 +23,6 @@ const useTokenList = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      console.log('personData', personData);
       return personData;
       // return [
       //   {
