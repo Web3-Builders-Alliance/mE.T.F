@@ -30,6 +30,7 @@
     "@tanstack/react-query-next-experimental": "5.24.1",
     "bs58": "5.0.0",
     "buffer": "6.0.3",
+    "clsx": "^2.1.0",
     "daisyui": "4.7.2",
     "encoding": "0.1.13",
     "jotai": "2.6.5",
