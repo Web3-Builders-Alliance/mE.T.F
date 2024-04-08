@@ -17,7 +17,7 @@ const usePersonTokenAccount = (pubkey: string | PublicKey) => {
         .eq('mint', onchain.tokenMint.toBase58())
         .single();
 
-      return { ...data };
+      return { ...data, currentSupply: onchain.currentSupply.toString() };
     },
     enabled: !!pubkey,
   });
