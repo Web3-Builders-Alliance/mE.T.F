@@ -71,12 +71,13 @@ const CreateTokenForm = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       model: Model.StabilityModel,
-      name: userInfo.name,
-      symbol: '',
-      photo: userInfo.photo,
+      name: 'xDhackr',
+      symbol: 'NTD',
+      photo:
+        'https://pump.mypinata.cloud/ipfs/QmTBNpGBLXuRKQS2B8HQLc7B7YndPUCdDJX2FwL29GPb8G',
     },
   });
-  console.log(watch('model'));
+
   const saveToken = useSaveToken();
   const onSubmit = async (data: any) => {
     try {
