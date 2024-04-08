@@ -7,10 +7,9 @@ import FetchDataLoading from './common/FetchDataLoading';
 
 const TokenList = () => {
   const { data, isLoading, isFetching, isSuccess, isError } = useTokenList();
-  // if (!data) return null;
 
   if (isLoading || isFetching) {
-    <FetchDataLoading />;
+    return <FetchDataLoading />;
   }
 
   if (isError) {
@@ -25,7 +24,7 @@ const TokenList = () => {
             <div className="bg-base-100 hover:shadow-xl transition-shadow duration-300 max-h-[10rem] overflow-hidden h-fit p-2 flex border border-transparent gap-2 w-full ">
               <figure className="min-w-[8rem]">
                 <Image
-                  src={token.image}
+                  src={token.image!}
                   alt={token.name}
                   width={96}
                   height={96}
@@ -35,12 +34,9 @@ const TokenList = () => {
               <div className="gap-1 grid h-fit">
                 <h4 className="text-sm">
                   Created by:{' '}
-                  <Link
-                    href={`/profile/${token.author}`}
-                    className="text-indigo-500 hover:text-indigo-600 transition-colors duration-300"
-                  >
+                  <span className="text-indigo-500 hover:text-indigo-600 transition-colors duration-300">
                     {token.author.slice(0, 10)}
-                  </Link>
+                  </span>
                 </h4>
                 <div className="text-sm">
                   Symbol:{' '}
