@@ -1,10 +1,11 @@
+'use client';
 import TokenList from '@/components/TokenList';
-import DashboardFeature from '@/components/dashboard/dashboard-feature';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Page() {
-
+  const [keyword, setKeyword] = useState('');
   return (
     <main className="isolate container min-h-full h-full">
       <div className="flex flex-col justify-center items-center space-y-5">
@@ -20,7 +21,12 @@ export default function Page() {
       </div>
       <div className="mt-10 flex flex-col space-y-5">
         <label className="input input-bordered flex items-center gap-2">
-          <input type="text" className="grow" placeholder="Search token" />
+          <input
+            type="text"
+            className="grow"
+            placeholder="Search token"
+            onChange={(e) => setKeyword(e.target.value)}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -34,7 +40,7 @@ export default function Page() {
             />
           </svg>
         </label>
-        <TokenList />
+        <TokenList keyword={keyword} />
       </div>
     </main>
   );
