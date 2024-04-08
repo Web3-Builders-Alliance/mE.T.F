@@ -1,9 +1,11 @@
 import { useMetfProgram } from '@/components/metf/metf-data-access';
+import { programId } from '@metf/anchor';
+import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
 import { createClient } from 'utils/supabase/client';
 
 const useTokenList = () => {
-  const { program } = useMetfProgram();
+  const { program, programId } = useMetfProgram();
   return useQuery({
     queryKey: ['tokenList'],
     queryFn: async () => {
@@ -23,7 +25,13 @@ const useTokenList = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      return personData;
+      return personData?.map((p) => ({
+        ...p,
+        pda: PublicKey.findProgramAddressSync(
+          [Buffer.from('person'), new PublicKey(p.author).toBuffer()],
+          programId
+        )[0].toBase58(),
+      }));
       // return [
       //   {
       //     mint: 'FyD6fWSb4nCfAisi2BRuUeDaCG5aKL7oniq2FbePULqr',
