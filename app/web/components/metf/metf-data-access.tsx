@@ -24,6 +24,8 @@ import {
   TOKEN_2022_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
+
+
 const fee = new BN(0.02 * LAMPORTS_PER_SOL);
 
 const CONFIG_SEED = 'config';
@@ -52,8 +54,12 @@ export function useMetfProgram() {
   );
 
   const bondingCurveId = new BN(1);
+  const bondingCurveIdBuffer = Buffer.allocUnsafe(8); // ADDED to fix
+  bondingCurveId.toArrayLike(Buffer, 'le', 8).copy(bondingCurveIdBuffer); // ADDED to fix 
+  
   const [bondingCurve1Pda] = PublicKey.findProgramAddressSync(
-    [Buffer.from('bonding-curve'), bondingCurveId.toBuffer('le', 8)],
+    // [Buffer.from('bonding-curve'), bondingCurveId.toBuffer('le', 8)], // ORIGINAL LINE
+    [Buffer.from('bonding-curve'), bondingCurveId], // ADDED to fix
     program.programId
   );
 
