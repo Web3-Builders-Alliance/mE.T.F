@@ -9,7 +9,7 @@ export function createClient() {
   // which could be used to maintain user's session
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE!, // Lostin, why ANON_KEY for server?
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // Lostin, why ANON_KEY for server?
     {
       cookies: {
         get(name: string) {

@@ -54,13 +54,12 @@ export function useMetfProgram() {
   );
 
   const bondingCurveId = new BN(1);
-  const bondingCurveIdBuffer = Buffer.allocUnsafe(8); // ADDED to fix
-  bondingCurveId.toArrayLike(Buffer, 'le', 8).copy(bondingCurveIdBuffer); // ADDED to fix 
+  const bondingCurveIdBuffer = Buffer.allocUnsafe(8);
+  bondingCurveId.toArrayLike(Buffer, 'le', 8).copy(bondingCurveIdBuffer);
   
   const [bondingCurve1Pda] = PublicKey.findProgramAddressSync(
-    // [Buffer.from('bonding-curve'), bondingCurveId.toBuffer('le', 8)], // ORIGINAL LINE
-    [Buffer.from('bonding-curve'), bondingCurveId], // ADDED to fix
-    program.programId
+    [Buffer.from('bonding-curve'), bondingCurveId],
+    program.programId 
   );
 
   const initProgram = useMutation({
@@ -91,7 +90,7 @@ export function useMetfProgram() {
     mutationKey: ['metf', 'createBondingModel', { cluster }],
     mutationFn: () => {
       return program.methods
-        .createBondingModel(bondingCurveId, 1, new BN(100)) // TODO: remove 1, Lostin added to get Vercel to deploy
+        .createBondingModel(bondingCurveId, 1, new BN(100)) // Added 1 to get Vercel to deploy
         .accounts({
           config: configPda,
           signer: provider.publicKey,
