@@ -18,8 +18,8 @@ export default function AuthForm() {
           variables: {
             default: {
               colors: {
-                brand: '#C46492',
-                brandAccent: '#BB4D81',
+                brand: '#E68966',
+                brandAccent: '#E06A40',
               },
             },
           },
@@ -27,7 +27,7 @@ export default function AuthForm() {
         theme="light"
         showLinks={false}
         providers={['twitter']}
-        // redirectTo="http://localhost:3000/auth/callback"
+        // redirectTo="http://localhost:3000/auth/callback" // Useful for local development
       />
   )
 }

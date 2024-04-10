@@ -1,5 +1,6 @@
 'use client';
 import TokenList from '@/components/TokenList';
+import AuthForm from '@/components/login/auth-form';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -18,16 +19,18 @@ export default async function Page() {
   .from('person_token')
   .select('mint,author,name,symbol,image,description')
 
-
   if (!user) return (
-    <>
-    <p>Go here to login</p>
-    <Link className="link" href={'/login'}>
-      <button className="btn btn-primary btn-md uppercase">
-        Login
-      </button>
-    </Link>
-    </>
+    
+  <div className="relative h-full">
+    <div className="absolute top-[33%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="flex flex-col justify-center min-w-[300px] max-w-[500px]">
+        <Image className="self-center" src={'/metf-logo.png'} width={128} height={128} alt={''} />
+        <br/>
+        <AuthForm />
+      </div>
+    </div>
+  </div>
+
   );
 
   return (
