@@ -3,14 +3,43 @@ import TokenList from '@/components/TokenList';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export default function Page() {
+export default async function Page() {
 
+  const supabase = createClientComponentClient()
   const [keyword, setKeyword] = useState('');
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  let { data: person_token, error } = await supabase
+  .from('person_token')
+  .select('mint,author,name,symbol,image,description')
+
+
+  if (!user) return (
+    <>
+    <p>Go here to login</p>
+    <Link className="link" href={'/login'}>
+      <button className="btn btn-primary btn-md uppercase">
+        Login
+      </button>
+    </Link>
+    </>
+  );
 
   return (
 
     <main className="isolate container min-h-full h-full">
+      
+      <div>
+      {person_token?.map((token, index) => (
+        <p key={index}>Name: {token.name} Symbol: {token.symbol} Mint: {token.mint}</p>
+      ))}
+    </div>
+
       <div className="flex flex-col justify-center items-center space-y-5">
         <Image src={'/metf-logo.png'} width={128} height={128} alt={''} />
         <h2 className="text-4xl">
