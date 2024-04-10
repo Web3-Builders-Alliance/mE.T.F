@@ -11,7 +11,14 @@ export default function AccountForm({ user }: { user: User | null }) {
   const [username, setUsername] = useState<string | null>(null);
   const [website, setWebsite] = useState<string | null>(null);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
-  if (!user) return null;
+  
+  if (!user) return (
+    <>
+    <p>No user object. User may not be logged in.</p>
+    </>
+  );
+  
+
   const getProfile = useCallback(async () => {
     try {
       setLoading(true);

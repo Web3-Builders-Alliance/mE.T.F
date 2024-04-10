@@ -5,13 +5,16 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function Page() {
+
   const [keyword, setKeyword] = useState('');
+
   return (
+
     <main className="isolate container min-h-full h-full">
       <div className="flex flex-col justify-center items-center space-y-5">
         <Image src={'/metf-logo.png'} width={128} height={128} alt={''} />
         <h2 className="text-4xl">
-          start your personal token in seconds for $1
+          Start your personal token in seconds for $1
         </h2>
         <Link className="link" href={'/create-new-token'}>
           <button className="btn btn-primary btn-md uppercase">
