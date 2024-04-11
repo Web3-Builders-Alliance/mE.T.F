@@ -36,7 +36,7 @@ export function UiLayout({
             <Image
               className="h-6 md:h-10"
               alt="mE.T.F Logo"
-              src="/metf-logo.png"
+              src="/metf-logo-square.png"
               width={40}
               height={40}
             />

@@ -20,17 +20,7 @@ export default async function Page() {
   .select('mint,author,name,symbol,image,description')
 
   if (!user) return (
-    
-  <div className="relative h-full">
-    <div className="absolute top-[33%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      <div className="flex flex-col justify-center min-w-[300px] max-w-[500px]">
-        <Image className="self-center" src={'/metf-logo.png'} width={128} height={128} alt={''} />
-        <br/>
         <AuthForm />
-      </div>
-    </div>
-  </div>
-
   );
 
   return (
@@ -44,7 +34,7 @@ export default async function Page() {
     </div>
 
       <div className="flex flex-col justify-center items-center space-y-5">
-        <Image src={'/metf-logo.png'} width={128} height={128} alt={''} />
+        <Image src={'/metf-logo-full-square.png'} width={128} height={128} alt={''} />
         <h2 className="text-4xl">
           Start your personal token in seconds for $1
         </h2>
